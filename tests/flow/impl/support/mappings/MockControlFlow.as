@@ -2,7 +2,9 @@ package flow.impl.support.mappings
 {
 import flow.impl.ControlFlow;
 
-public class MockFlowGroup extends ControlFlow
+import org.swiftsuspenders.Injector;
+
+public class MockControlFlow extends ControlFlow
 {
     public var executeCalled:int = 0;
 
@@ -12,9 +14,9 @@ public class MockFlowGroup extends ControlFlow
         executeCalled++;
     }
 
-    public function MockFlowGroup()
+    public function MockControlFlow(injector:Injector)
     {
-        super( null );
+        super( injector );
     }
 }
 }

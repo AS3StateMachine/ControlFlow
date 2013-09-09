@@ -1,21 +1,21 @@
 package flow.impl
 {
-import flow.dsl.FlowGroupMapping;
-import flow.dsl.SingleFlowMapping;
+import flow.dsl.ControlFlowMapping;
+import flow.dsl.SimpleControlFlowMapping;
 
-public class SimpleControlFlow implements SingleFlowMapping, Executable
+public class SimpleControlFlow implements SimpleControlFlowMapping, Executable
 {
     internal const _commandGroup:ExecutionData = new ExecutionData();
-    private var _parent:FlowGroupMapping;
+    private var _parent:ControlFlowMapping;
     private var _executor:Executor;
 
-    public function SimpleControlFlow( parent:FlowGroupMapping, executor:Executor ):void
+    public function SimpleControlFlow( parent:ControlFlowMapping, executor:Executor ):void
     {
         _parent = parent;
         _executor = executor;
     }
 
-    public function executeAll( ...args ):SingleFlowMapping
+    public function executeAll( ...args ):SimpleControlFlowMapping
     {
         for each ( var commandClass:Class in args )
         {
@@ -24,7 +24,7 @@ public class SimpleControlFlow implements SingleFlowMapping, Executable
         return this;
     }
 
-    public function onApproval( ...args ):SingleFlowMapping
+    public function onApproval( ...args ):SimpleControlFlowMapping
     {
         for each ( var guardClass:Class in args )
         {
@@ -33,7 +33,7 @@ public class SimpleControlFlow implements SingleFlowMapping, Executable
         return this;
     }
 
-    public function get and():FlowGroupMapping
+    public function get and():ControlFlowMapping
     {
         _commandGroup.fix();
         return _parent;

@@ -1,8 +1,8 @@
 package flow.impl
 {
-import flow.dsl.CaseFlowMapping;
-import flow.dsl.FlowGroupMapping;
-import flow.dsl.SingleFlowMapping;
+import flow.dsl.OptionalControlFlowMapping;
+import flow.dsl.ControlFlowMapping;
+import flow.dsl.SimpleControlFlowMapping;
 import flow.impl.support.ClassRegistry;
 import flow.impl.support.mappings.MockOptionFlowGroup;
 import flow.impl.support.mappings.MockSingleFlowGroup;
@@ -27,11 +27,10 @@ public class ControlFlowTest implements ClassRegistry
         _executables = new Vector.<Class>();
         _injector = new Injector();
         _classUnderTest = new ControlFlow( _injector );
-        _injector.map( FlowGroupMapping ).toValue( _classUnderTest );
+        _injector.map( ControlFlowMapping ).toValue( _classUnderTest );
         _injector.map( ClassRegistry ).toValue( this );
         _injector.map( SimpleControlFlow ).toType( MockSingleFlowGroup );
         _injector.map( OptionalControlFlow ).toType( MockOptionFlowGroup );
-
     }
 
     [After]
@@ -46,9 +45,21 @@ public class ControlFlowTest implements ClassRegistry
 
 
     [Test]
+    public function constructor_creates_childInjector():void
+    {
+        assertThat( _classUnderTest.injector.parentInjector, strictlyEqualTo( _injector ) );
+    }
+
+    [Test]
+    public function constructor_maps_ControlFlowMapping_to_self_in_childInjector():void
+    {
+        assertThat( _classUnderTest.injector.getInstance(ControlFlowMapping), strictlyEqualTo( _classUnderTest ) );
+    }
+
+    [Test]
     public function always_property_returns_instanceOf_SingleFlowMapping():void
     {
-        assertThat( _classUnderTest.always, instanceOf( SingleFlowMapping ) )
+        assertThat( _classUnderTest.always, instanceOf( SimpleControlFlowMapping ) )
     }
 
     [Test]
@@ -66,7 +77,7 @@ public class ControlFlowTest implements ClassRegistry
     [Test]
     public function either_property_returns_instanceOf_CaseFlowMapping():void
     {
-        assertThat( _classUnderTest.either, instanceOf( CaseFlowMapping ) )
+        assertThat( _classUnderTest.either, instanceOf( OptionalControlFlowMapping ) )
     }
 
     [Test]

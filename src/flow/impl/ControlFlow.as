@@ -1,29 +1,31 @@
 package flow.impl
 {
-import flow.dsl.CaseFlowMapping;
-import flow.dsl.FlowGroupMapping;
-import flow.dsl.SingleFlowMapping;
+import flow.dsl.ControlFlowMapping;
+import flow.dsl.OptionalControlFlowMapping;
+import flow.dsl.SimpleControlFlowMapping;
 
 import org.swiftsuspenders.Injector;
 
-public class ControlFlow implements FlowGroupMapping
+public class ControlFlow implements ControlFlowMapping
 {
     internal var injector:Injector;
     internal const blocks:Vector.<Executable> = new Vector.<Executable>();
 
     public function ControlFlow( injector:Injector )
     {
-        this.injector = injector;
+        this.injector = injector.createChildInjector();
+        this.injector.map( Injector ).toValue( this.injector );
+        this.injector.map( ControlFlowMapping ).toValue( this );
     }
 
-    public function get always():SingleFlowMapping
+    public function get always():SimpleControlFlowMapping
     {
         const block:* = injector.getOrCreateNewInstance( SimpleControlFlow );
         blocks.push( block );
         return block;
     }
 
-    public function get either():CaseFlowMapping
+    public function get either():OptionalControlFlowMapping
     {
         const block:* = injector.getOrCreateNewInstance( OptionalControlFlow );
         blocks.push( block );

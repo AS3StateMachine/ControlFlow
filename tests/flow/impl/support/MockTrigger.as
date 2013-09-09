@@ -4,16 +4,21 @@ import flow.api.Trigger;
 
 public class MockTrigger implements Trigger
 {
-    public var listener:Function;
+    private var _listener:Function;
 
     public function add( listener:Function ):void
     {
-        this.listener = listener;
+        _listener = listener;
     }
 
     public function remove():void
     {
-        this.listener = null;
+        _listener = null;
+    }
+
+    public function execute():void
+    {
+        (_listener != null) && _listener();
     }
 }
 }

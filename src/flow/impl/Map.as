@@ -4,7 +4,7 @@ import flash.utils.Dictionary;
 
 import flow.api.Trigger;
 import flow.api.TriggerMap;
-import flow.dsl.FlowGroupMapping;
+import flow.dsl.ControlFlowMapping;
 
 import org.swiftsuspenders.Injector;
 
@@ -19,8 +19,9 @@ public class Map implements TriggerMap
         this.injector = injector.createChildInjector();
     }
 
-    public function on( trigger:Class ):FlowGroupMapping
+    public function on( trigger:Class ):ControlFlowMapping
     {
+       const test:Boolean = injector.hasMapping(Injector);
         const flowGroup:ControlFlow = injector.getOrCreateNewInstance( ControlFlow );
         const t:Trigger = injector.getOrCreateNewInstance( trigger );
 

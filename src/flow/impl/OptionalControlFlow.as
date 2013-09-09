@@ -1,23 +1,23 @@
 package flow.impl
 {
-import flow.dsl.CaseFlowMapping;
-import flow.dsl.FlowGroupMapping;
+import flow.dsl.OptionalControlFlowMapping;
+import flow.dsl.ControlFlowMapping;
 
-public class OptionalControlFlow implements CaseFlowMapping, Executable
+public class OptionalControlFlow implements OptionalControlFlowMapping, Executable
 {
     internal const executionData:Vector.<ExecutionData> = new Vector.<ExecutionData>();
     internal var currentCommandGroup:ExecutionData
 
-    private var _parent:FlowGroupMapping;
+    private var _parent:ControlFlowMapping;
     private var _executor:Executor;
 
-    public function OptionalControlFlow( parent:FlowGroupMapping, executor:Executor ):void
+    public function OptionalControlFlow( parent:ControlFlowMapping, executor:Executor ):void
     {
         _parent = parent;
         _executor = executor;
     }
 
-    public function executeAll( ...args ):CaseFlowMapping
+    public function executeAll( ...args ):OptionalControlFlowMapping
     {
         (currentCommandGroup == null) && createAndPushCommandGroup();
 
@@ -29,7 +29,7 @@ public class OptionalControlFlow implements CaseFlowMapping, Executable
         return this;
     }
 
-    public function onApproval( ...args ):CaseFlowMapping
+    public function onApproval( ...args ):OptionalControlFlowMapping
     {
         (currentCommandGroup == null) && createAndPushCommandGroup();
 
@@ -47,13 +47,13 @@ public class OptionalControlFlow implements CaseFlowMapping, Executable
         executionData.push( currentCommandGroup );
     }
 
-    public function get and():FlowGroupMapping
+    public function get and():ControlFlowMapping
     {
         fix();
         return _parent;
     }
 
-    public function get or():CaseFlowMapping
+    public function get or():OptionalControlFlowMapping
     {
         fix();
         return this;

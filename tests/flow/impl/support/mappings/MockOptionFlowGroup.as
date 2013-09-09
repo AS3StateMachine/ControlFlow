@@ -1,6 +1,6 @@
 package flow.impl.support.mappings
 {
-import flow.dsl.FlowGroupMapping;
+import flow.dsl.ControlFlowMapping;
 import flow.impl.OptionalControlFlow;
 import flow.impl.support.ClassRegistry;
 
@@ -14,7 +14,7 @@ public class MockOptionFlowGroup extends OptionalControlFlow
         _registry.register( MockOptionFlowGroup )
     }
 
-    public function MockOptionFlowGroup( parent:FlowGroupMapping, registry:ClassRegistry )
+    public function MockOptionFlowGroup( parent:ControlFlowMapping, registry:ClassRegistry )
     {
         super( parent, null );
         _registry = registry;
