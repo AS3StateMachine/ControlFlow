@@ -11,6 +11,7 @@ import flow.impl.support.guards.JoyfulGuard;
 
 import org.hamcrest.assertThat;
 import org.hamcrest.collection.array;
+import org.hamcrest.object.equalTo;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
@@ -80,7 +81,7 @@ public class StressTest implements ClassRegistry
     }
 
     [Test]
-    public function test_either_blocks():void
+    public function test_either_blocks_last_block_only_approved():void
     {
         _classUnderTest
                 .on( MockTrigger )
@@ -99,6 +100,27 @@ public class StressTest implements ClassRegistry
                 )
         )
     }
+
+    [Test]
+    public function test_either_blocks__all_blocks_approved():void
+    {
+        _classUnderTest
+                .on( MockTrigger )
+                .either.executeAll( MockCommandThree, MockCommandTwo ).onApproval( HappyGuard )
+                .or.executeAll( MockCommandThree ).onApproval( JoyfulGuard, HappyGuard )
+                .or.executeAll( MockCommandTwo, MockCommandOne, MockCommandTwo );
+
+        _trigger.execute();
+
+        assertThat(
+                _commands,
+                array(
+                        strictlyEqualTo( MockCommandThree ),
+                        strictlyEqualTo( MockCommandTwo )
+                )
+        )
+    }
+
 
     [Test]
     public function test_either_blocks_onApproval_first():void
@@ -145,6 +167,50 @@ public class StressTest implements ClassRegistry
                         strictlyEqualTo( MockCommandThree )
                 )
         )
+    }
+
+    [Test]
+    public function test_either_always_blocks_mixed_all_approved():void
+    {
+        _classUnderTest
+                .on( MockTrigger )
+                .always.executeAll( MockCommandThree, MockCommandThree, MockCommandOne )
+                .and.either.onApproval( HappyGuard ).executeAll( MockCommandThree, MockCommandTwo )
+                .or.onApproval( JoyfulGuard ).executeAll( MockCommandThree )
+                .and.always.onApproval( JoyfulGuard, HappyGuard ).executeAll( MockCommandTwo, MockCommandThree, MockCommandOne );
+
+        _trigger.execute();
+
+        assertThat(
+                _commands,
+                array(
+                        strictlyEqualTo( MockCommandThree ),
+                        strictlyEqualTo( MockCommandThree ),
+                        strictlyEqualTo( MockCommandOne ),
+
+                        strictlyEqualTo( MockCommandThree ),
+                        strictlyEqualTo( MockCommandTwo ),
+
+                        strictlyEqualTo( MockCommandTwo ),
+                        strictlyEqualTo( MockCommandThree ),
+                        strictlyEqualTo( MockCommandOne )
+                )
+        )
+    }
+
+    [Test]
+    public function test_either_always_blocks_mixed_none_approved():void
+    {
+        _classUnderTest
+                .on( MockTrigger )
+                .always.executeAll( MockCommandThree, MockCommandThree, MockCommandOne ).onApproval( JoyfulGuard, GrumpyGuard )
+                .and.either.onApproval( GrumpyGuard, HappyGuard ).executeAll( MockCommandThree, MockCommandTwo )
+                .or.onApproval( GrumpyGuard ).executeAll( MockCommandThree )
+                .and.always.onApproval( JoyfulGuard, GrumpyGuard ).executeAll( MockCommandTwo, MockCommandThree, MockCommandOne );
+
+        _trigger.execute();
+
+        assertThat( _commands.length, equalTo( 0 ) );
     }
 
 
