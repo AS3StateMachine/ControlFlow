@@ -34,7 +34,6 @@ public class SimpleControlFlowTest implements ClassRegistry
 
     }
 
-
     [Test]
     public function and_property_returns_parent_mapping():void
     {

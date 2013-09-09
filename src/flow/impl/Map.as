@@ -2,8 +2,8 @@ package flow.impl
 {
 import flash.utils.Dictionary;
 
-import flow.api.TriggerMap;
 import flow.api.Trigger;
+import flow.api.TriggerMap;
 import flow.dsl.FlowGroupMapping;
 
 import org.swiftsuspenders.Injector;

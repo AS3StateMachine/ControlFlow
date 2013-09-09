@@ -14,7 +14,7 @@ public class MockSingleFlowGroup extends SimpleControlFlow
         _registry.register( MockSingleFlowGroup )
     }
 
-    public function MockSingleFlowGroup(parent:FlowGroupMapping,  registry:ClassRegistry )
+    public function MockSingleFlowGroup( parent:FlowGroupMapping, registry:ClassRegistry )
     {
         super( parent, null );
         _registry = registry;

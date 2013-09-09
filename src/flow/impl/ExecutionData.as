@@ -12,7 +12,7 @@ public class ExecutionData
 
     public function pushCommand( command:Class ):void
     {
-       _commands.push( command );
+        _commands.push( command );
     }
 
     public function get guards():Vector.<Class>

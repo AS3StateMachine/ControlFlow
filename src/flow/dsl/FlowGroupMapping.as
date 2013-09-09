@@ -6,7 +6,6 @@ public interface FlowGroupMapping
 
     function get either():CaseFlowMapping;
 
-    function handle( errorHandler:* ):void;
     function fix():void;
 }
 }

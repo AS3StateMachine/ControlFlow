@@ -21,16 +21,7 @@ public class Executor
         for each( var cmdClass:Class in commands )
         {
             const cmd:* = _injector.instantiateUnmapped( cmdClass );
-
-            try
-            {
-                cmd.execute();
-            }
-
-            catch ( error:Error )
-            {
-                handleError( error );
-            }
+            cmd.execute();
         }
 
         return true;
@@ -41,25 +32,10 @@ public class Executor
         for each( var guardClass:Class in guards )
         {
             const guard:* = _injector.instantiateUnmapped( guardClass );
-
-            try
-            {
-                const result:Boolean = guard.approve();
-                if ( !result ) return false;
-            }
-
-            catch ( error:Error )
-            {
-                handleError( error );
-            }
+            if ( !guard.approve() ) return false;
 
         }
         return true;
-    }
-
-    private function handleError( error:Error ):void
-    {
-        throw new FlowError(error)
     }
 
 

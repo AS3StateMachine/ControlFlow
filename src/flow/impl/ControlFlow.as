@@ -10,7 +10,6 @@ public class ControlFlow implements FlowGroupMapping
 {
     internal var injector:Injector;
     internal const blocks:Vector.<Executable> = new Vector.<Executable>();
-    private var _errorHandler:*;
 
     public function ControlFlow( injector:Injector )
     {
@@ -31,12 +30,6 @@ public class ControlFlow implements FlowGroupMapping
         return block;
     }
 
-    public function handle( errorHandler:* ):void
-    {
-        _errorHandler = errorHandler;
-        fix();
-    }
-
     public function fix():void
     {
         blocks.fixed = true;
@@ -46,25 +39,7 @@ public class ControlFlow implements FlowGroupMapping
     {
         for each ( var block:Executable in blocks )
         {
-            try
-            {
-                block.execute();
-            }
-
-            catch ( error:Error )
-            {
-                if ( _errorHandler is Function )
-                {
-                    _errorHandler( error )
-                }
-
-                else if ( _errorHandler is Class )
-                {
-
-                }
-
-            }
-
+            block.execute();
         }
     }
 }

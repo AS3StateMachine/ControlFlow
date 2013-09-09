@@ -197,7 +197,7 @@ public class OptionControlFlowTest implements ClassRegistry
 
     public function register( c:Class ):void
     {
-          _registeredClasses.push(c);
+        _registeredClasses.push( c );
     }
 }
 }

@@ -4,7 +4,6 @@ import flow.dsl.CaseFlowMapping;
 import flow.dsl.FlowGroupMapping;
 import flow.dsl.SingleFlowMapping;
 import flow.impl.support.ClassRegistry;
-import flow.impl.support.cmds.ErrorCommandOne;
 import flow.impl.support.mappings.MockOptionFlowGroup;
 import flow.impl.support.mappings.MockSingleFlowGroup;
 
@@ -101,7 +100,6 @@ public class ControlFlowTest implements ClassRegistry
                         strictlyEqualTo( MockOptionFlowGroup )
                 ) );
     }
-
 
 
     public function register( c:Class ):void

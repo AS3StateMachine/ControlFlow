@@ -1,8 +1,8 @@
 package flow.impl
 {
 import flow.dsl.FlowGroupMapping;
-import flow.impl.support.mappings.MockFlowGroup;
 import flow.impl.support.MockTrigger;
+import flow.impl.support.mappings.MockFlowGroup;
 
 import org.hamcrest.assertThat;
 import org.hamcrest.object.equalTo;
