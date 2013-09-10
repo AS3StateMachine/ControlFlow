@@ -3,12 +3,11 @@ package flow.impl
 import flash.utils.Dictionary;
 
 import flow.core.Trigger;
-import flow.core.TriggerMap;
 import flow.dsl.ControlFlowMapping;
 
 import org.swiftsuspenders.Injector;
 
-public class TriggerMap implements TriggerMap
+public class TriggerMap
 {
     internal var injector:Injector;
 

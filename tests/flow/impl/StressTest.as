@@ -1,7 +1,7 @@
 package flow.impl
 {
 import flow.impl.support.ClassRegistry;
-import flow.impl.support.MockTrigger;
+import flow.impl.support.ExecutableTrigger;
 import flow.impl.support.cmds.MockCommandOne;
 import flow.impl.support.cmds.MockCommandThree;
 import flow.impl.support.cmds.MockCommandTwo;
@@ -20,7 +20,7 @@ public class StressTest implements ClassRegistry
     private var _classUnderTest:TriggerMap;
     private var _injector:Injector;
     private var _commands:Vector.<Class>;
-    private var _trigger:MockTrigger;
+    private var _trigger:ExecutableTrigger;
 
     [Before]
     public function before():void
@@ -31,8 +31,8 @@ public class StressTest implements ClassRegistry
         _injector.map( ClassRegistry ).toValue( this );
         _injector.map( Injector ).toValue( _injector );
         _injector.map( Executor );
-        _injector.map( MockTrigger ).asSingleton();
-        _trigger = _injector.getInstance( MockTrigger );
+        _injector.map( ExecutableTrigger ).asSingleton();
+        _trigger = _injector.getInstance( ExecutableTrigger );
     }
 
 

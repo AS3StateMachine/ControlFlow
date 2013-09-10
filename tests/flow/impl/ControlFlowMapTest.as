@@ -1,7 +1,7 @@
 package flow.impl
 {
 import flow.dsl.ControlFlowMapping;
-import flow.impl.support.MockTrigger;
+import flow.impl.support.ExecutableTrigger;
 import flow.impl.support.mappings.MockControlFlow;
 
 import org.hamcrest.assertThat;
@@ -19,7 +19,7 @@ public class ControlFlowMapTest
     public function before():void
     {
         _injector = new Injector();
-        _injector.map( MockTrigger ).asSingleton();
+        _injector.map( ExecutableTrigger ).asSingleton();
         _injector.map( Injector ).toValue( _injector );
         _injector.map( ControlFlow ).toSingleton( MockControlFlow );
         _classUnderTest = new TriggerMap( _injector );
@@ -30,13 +30,13 @@ public class ControlFlowMapTest
     [Test]
     public function on_returns_instanceOf_FlowGroupMapping():void
     {
-        assertThat( _classUnderTest.map( new MockTrigger() ), instanceOf( ControlFlowMapping ) )
+        assertThat( _classUnderTest.map( new ExecutableTrigger() ), instanceOf( ControlFlowMapping ) )
     }
 
     [Test]
     public function when_trigger_listener_is_called__FlowGroup_is_executed():void
     {
-        const trigger:MockTrigger = _injector.getInstance( MockTrigger );
+        const trigger:ExecutableTrigger = _injector.getInstance( ExecutableTrigger );
         const flowGroup:MockControlFlow = _injector.getInstance( ControlFlow );
         _classUnderTest.map( trigger );
         trigger.execute();
@@ -46,7 +46,7 @@ public class ControlFlowMapTest
     [Test]
     public function when_trigger_is_removed__trigger_listener_is_null():void
     {
-        const trigger:MockTrigger = _injector.getInstance( MockTrigger );
+        const trigger:ExecutableTrigger = _injector.getInstance( ExecutableTrigger );
         const flowGroup:MockControlFlow = _injector.getInstance( ControlFlow );
         _classUnderTest.map( trigger );
         _classUnderTest.unmap( trigger );

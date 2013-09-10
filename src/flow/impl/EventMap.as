@@ -1,7 +1,5 @@
 package flow.impl
 {
-import flash.utils.Dictionary;
-
 import flow.api.EventControlFlowMap;
 import flow.dsl.ControlFlowMapping;
 
@@ -11,11 +9,14 @@ public class EventMap implements EventControlFlowMap
 {
     internal var injector:Injector;
 
-    private const _map:Dictionary = new Dictionary();
+    private var _map:TriggerMap
 
     public function EventMap( injector:Injector )
     {
-        this.injector = injector;
+        this.injector = injector.createChildInjector();
+        this.injector.map( Injector ).toValue( this.injector );
+        this.injector.map( Executor );
+        _map = this.injector.getOrCreateNewInstance( TriggerMap );
     }
 
 
