@@ -37,7 +37,7 @@ public class EventTriggerTest
     }
 
     [Test]
-    public function on_event_dispatch_once_client_executed_once():void
+    public function on_event_dispatch_once__client_executed_once():void
     {
         configure( Event.COMPLETE, null );
         dispatch( new Event( Event.COMPLETE ) )
@@ -45,12 +45,22 @@ public class EventTriggerTest
     }
 
     [Test]
-    public function on_event_dispatch_twice_client_executed_twice():void
+    public function on_event_dispatch_twice__client_executed_twice():void
     {
         configure( Event.COMPLETE, null );
         dispatch( new Event( Event.COMPLETE ) );
         dispatch( new Event( Event.COMPLETE ) );
         assertThat( _executable.numbExecutions, equalTo( 2 ) );
+    }
+
+    [Test]
+    public function remove__client_not_executed():void
+    {
+        configure( Event.COMPLETE, null );
+        _classUnderTest.remove();
+        dispatch( new Event( Event.COMPLETE ) );
+        dispatch( new Event( Event.COMPLETE ) );
+        assertThat( _executable.numbExecutions, equalTo( 0 ) );
     }
 
     [Test]

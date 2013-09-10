@@ -32,7 +32,9 @@ public class EventTrigger implements Trigger
 
     private function handleEvent( event:Event ):void
     {
-        const eventClass:Class = (_eventClass == null) ? Event : _eventClass ;
+        if ( _client == null )return;
+
+        const eventClass:Class = (_eventClass == null) ? Event : _eventClass;
         injector.map( eventClass ).toValue( event );
         (preExecute != null) && preExecute();
         _client.execute();
@@ -48,6 +50,7 @@ public class EventTrigger implements Trigger
 
     public function remove():void
     {
+        _client = null;
     }
 }
 }
