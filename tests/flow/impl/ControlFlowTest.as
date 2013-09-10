@@ -1,7 +1,7 @@
 package flow.impl
 {
-import flow.dsl.OptionalControlFlowMapping;
 import flow.dsl.ControlFlowMapping;
+import flow.dsl.OptionalControlFlowMapping;
 import flow.dsl.SimpleControlFlowMapping;
 import flow.impl.support.ClassRegistry;
 import flow.impl.support.mappings.MockOptionFlowGroup;
@@ -53,7 +53,7 @@ public class ControlFlowTest implements ClassRegistry
     [Test]
     public function constructor_maps_ControlFlowMapping_to_self_in_childInjector():void
     {
-        assertThat( _classUnderTest.injector.getInstance(ControlFlowMapping), strictlyEqualTo( _classUnderTest ) );
+        assertThat( _classUnderTest.injector.getInstance( ControlFlowMapping ), strictlyEqualTo( _classUnderTest ) );
     }
 
     [Test]

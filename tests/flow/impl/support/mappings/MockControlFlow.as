@@ -14,7 +14,7 @@ public class MockControlFlow extends ControlFlow
         executeCalled++;
     }
 
-    public function MockControlFlow(injector:Injector)
+    public function MockControlFlow( injector:Injector )
     {
         super( injector );
     }
