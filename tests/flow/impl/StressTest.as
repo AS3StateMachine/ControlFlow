@@ -17,7 +17,7 @@ import org.swiftsuspenders.Injector;
 
 public class StressTest implements ClassRegistry
 {
-    private var _classUnderTest:Map;
+    private var _classUnderTest:ControlFlowMap;
     private var _injector:Injector;
     private var _commands:Vector.<Class>;
     private var _trigger:MockTrigger;
@@ -27,7 +27,7 @@ public class StressTest implements ClassRegistry
     {
         _commands = new Vector.<Class>();
         _injector = new Injector();
-        _classUnderTest = new Map( _injector );
+        _classUnderTest = new ControlFlowMap( _injector );
         _injector.map( ClassRegistry ).toValue( this );
         _injector.map( Injector ).toValue( _injector );
         _injector.map( Executor );
@@ -40,7 +40,7 @@ public class StressTest implements ClassRegistry
     public function test_always_blocks():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .always.executeAll( MockCommandThree, MockCommandTwo )
                 .and.always.executeAll( MockCommandThree ).onApproval( GrumpyGuard, HappyGuard )
                 .and.always.executeAll( MockCommandTwo, MockCommandOne ).onApproval( JoyfulGuard, HappyGuard );
@@ -62,7 +62,7 @@ public class StressTest implements ClassRegistry
     public function test_always_blocks_onApproval_first():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .always.executeAll( MockCommandThree, MockCommandTwo )
                 .and.always.onApproval( GrumpyGuard, HappyGuard ).executeAll( MockCommandThree )
                 .and.always.onApproval( JoyfulGuard, HappyGuard ).executeAll( MockCommandTwo, MockCommandOne );
@@ -84,7 +84,7 @@ public class StressTest implements ClassRegistry
     public function test_either_blocks_last_block_only_approved():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .either.executeAll( MockCommandThree, MockCommandTwo ).onApproval( GrumpyGuard, HappyGuard )
                 .or.executeAll( MockCommandThree ).onApproval( JoyfulGuard, GrumpyGuard )
                 .or.executeAll( MockCommandTwo, MockCommandOne, MockCommandTwo );
@@ -105,7 +105,7 @@ public class StressTest implements ClassRegistry
     public function test_either_blocks__all_blocks_approved():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .either.executeAll( MockCommandThree, MockCommandTwo ).onApproval( HappyGuard )
                 .or.executeAll( MockCommandThree ).onApproval( JoyfulGuard, HappyGuard )
                 .or.executeAll( MockCommandTwo, MockCommandOne, MockCommandTwo );
@@ -126,7 +126,7 @@ public class StressTest implements ClassRegistry
     public function test_either_blocks_onApproval_first():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .either.onApproval( GrumpyGuard, HappyGuard ).executeAll( MockCommandThree, MockCommandTwo )
                 .or.onApproval( JoyfulGuard, GrumpyGuard ).executeAll( MockCommandThree )
                 .or.executeAll( MockCommandTwo, MockCommandOne, MockCommandTwo );
@@ -147,7 +147,7 @@ public class StressTest implements ClassRegistry
     public function test_either_always_blocks_mixed():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .always.executeAll( MockCommandThree, MockCommandThree, MockCommandOne )
                 .and.either.onApproval( GrumpyGuard, HappyGuard ).executeAll( MockCommandThree, MockCommandTwo )
                 .or.onApproval( JoyfulGuard, GrumpyGuard ).executeAll( MockCommandThree )
@@ -173,7 +173,7 @@ public class StressTest implements ClassRegistry
     public function test_either_always_blocks_mixed_all_approved():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .always.executeAll( MockCommandThree, MockCommandThree, MockCommandOne )
                 .and.either.onApproval( HappyGuard ).executeAll( MockCommandThree, MockCommandTwo )
                 .or.onApproval( JoyfulGuard ).executeAll( MockCommandThree )
@@ -202,7 +202,7 @@ public class StressTest implements ClassRegistry
     public function test_either_always_blocks_mixed_none_approved():void
     {
         _classUnderTest
-                .on( MockTrigger )
+                .map( MockTrigger )
                 .always.executeAll( MockCommandThree, MockCommandThree, MockCommandOne ).onApproval( JoyfulGuard, GrumpyGuard )
                 .and.either.onApproval( GrumpyGuard, HappyGuard ).executeAll( MockCommandThree, MockCommandTwo )
                 .or.onApproval( GrumpyGuard ).executeAll( MockCommandThree )

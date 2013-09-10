@@ -8,20 +8,20 @@ import flow.dsl.ControlFlowMapping;
 
 import org.swiftsuspenders.Injector;
 
-public class Map implements TriggerMap
+public class ControlFlowMap implements TriggerMap
 {
     internal var injector:Injector;
 
     private const _map:Dictionary = new Dictionary();
 
-    public function Map( injector:Injector )
+    public function ControlFlowMap( injector:Injector )
     {
-        this.injector = injector.createChildInjector();
+        this.injector = injector;
     }
 
-    public function on( trigger:Class ):ControlFlowMapping
+    public function map( trigger:Class ):ControlFlowMapping
     {
-       const test:Boolean = injector.hasMapping(Injector);
+        const test:Boolean = injector.hasMapping( Injector );
         const flowGroup:ControlFlow = injector.getOrCreateNewInstance( ControlFlow );
         const t:Trigger = injector.getOrCreateNewInstance( trigger );
 
@@ -37,7 +37,7 @@ public class Map implements TriggerMap
         return flowGroup;
     }
 
-    public function remove( trigger:Class ):void
+    public function unmap( trigger:Class ):void
     {
         if ( _map[trigger] == null ) return;
         Trigger( _map[trigger] ).remove();
