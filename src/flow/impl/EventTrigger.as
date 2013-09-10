@@ -23,11 +23,12 @@ public class EventTrigger implements Trigger
         _eventClass = eventClass;
     }
 
-    public function setInjector( value:Injector ):void
+    public function setInjector( value:Injector ):EventTrigger
     {
         injector = value;
         _dispatcher = injector.getInstance( IEventDispatcher );
-        _dispatcher.addEventListener( _type, handleEvent )
+        _dispatcher.addEventListener( _type, handleEvent ) ;
+        return this;
     }
 
     private function handleEvent( event:Event ):void
