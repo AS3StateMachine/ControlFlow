@@ -1,5 +1,6 @@
 package flow.impl
 {
+import flow.core.Executable;
 import flow.dsl.ControlFlowMapping;
 import flow.dsl.SimpleControlFlowMapping;
 

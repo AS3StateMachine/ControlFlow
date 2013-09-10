@@ -1,24 +1,25 @@
 package flow.impl.support
 {
-import flow.api.Trigger;
+import flow.core.Trigger;
+import flow.core.Executable;
 
 public class MockTrigger implements Trigger
 {
-    private var _listener:Function;
+    private var _client:Executable;
 
-    public function add( listener:Function ):void
+    public function add( client:Executable ):void
     {
-        _listener = listener;
+        _client = client;
     }
 
     public function remove():void
     {
-        _listener = null;
+        _client = null;
     }
 
     public function execute():void
     {
-        (_listener != null) && _listener();
+        (_client != null) && _client.execute();
     }
 }
 }

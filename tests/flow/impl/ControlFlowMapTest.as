@@ -12,7 +12,7 @@ import org.swiftsuspenders.Injector;
 
 public class ControlFlowMapTest
 {
-    private var _classUnderTest:ControlFlowMap;
+    private var _classUnderTest:TriggerMap;
     private var _injector:Injector;
 
     [Before]
@@ -22,20 +22,15 @@ public class ControlFlowMapTest
         _injector.map( MockTrigger ).asSingleton();
         _injector.map( Injector ).toValue( _injector );
         _injector.map( ControlFlow ).toSingleton( MockControlFlow );
-        _classUnderTest = new ControlFlowMap( _injector );
+        _classUnderTest = new TriggerMap( _injector );
     }
 
-    [Test]
-    public function Map_creates_child_injector():void
-    {
-        assertThat( _classUnderTest.injector.parentInjector, strictlyEqualTo( _injector ) );
-    }
 
 
     [Test]
     public function on_returns_instanceOf_FlowGroupMapping():void
     {
-        assertThat( _classUnderTest.map( MockTrigger ), instanceOf( ControlFlowMapping ) )
+        assertThat( _classUnderTest.map( new MockTrigger() ), instanceOf( ControlFlowMapping ) )
     }
 
     [Test]
@@ -43,7 +38,7 @@ public class ControlFlowMapTest
     {
         const trigger:MockTrigger = _injector.getInstance( MockTrigger );
         const flowGroup:MockControlFlow = _injector.getInstance( ControlFlow );
-        _classUnderTest.map( MockTrigger );
+        _classUnderTest.map( trigger );
         trigger.execute();
         assertThat( flowGroup.executeCalled, equalTo( 1 ) );
     }
@@ -53,8 +48,8 @@ public class ControlFlowMapTest
     {
         const trigger:MockTrigger = _injector.getInstance( MockTrigger );
         const flowGroup:MockControlFlow = _injector.getInstance( ControlFlow );
-        _classUnderTest.map( MockTrigger );
-        _classUnderTest.unmap( MockTrigger );
+        _classUnderTest.map( trigger );
+        _classUnderTest.unmap( trigger );
         trigger.execute();
         assertThat( flowGroup.executeCalled, equalTo( 0 ) );
     }

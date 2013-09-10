@@ -1,12 +1,13 @@
 package flow.impl
 {
+import flow.core.Executable;
 import flow.dsl.ControlFlowMapping;
 import flow.dsl.OptionalControlFlowMapping;
 import flow.dsl.SimpleControlFlowMapping;
 
 import org.swiftsuspenders.Injector;
 
-public class ControlFlow implements ControlFlowMapping
+public class ControlFlow implements ControlFlowMapping , Executable
 {
     internal var injector:Injector;
     internal const blocks:Vector.<Executable> = new Vector.<Executable>();
