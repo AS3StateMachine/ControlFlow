@@ -15,9 +15,9 @@ import org.hamcrest.object.instanceOf;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-public class ControlFlowTest implements ClassRegistry
+public class ControlFlowContainerTest implements ClassRegistry
 {
-    private var _classUnderTest:ControlFlow;
+    private var _classUnderTest:ControlFlowContainer;
     private var _injector:Injector;
     private var _executables:Vector.<Class>;
 
@@ -26,7 +26,7 @@ public class ControlFlowTest implements ClassRegistry
     {
         _executables = new Vector.<Class>();
         _injector = new Injector();
-        _classUnderTest = new ControlFlow( _injector );
+        _classUnderTest = new ControlFlowContainer( _injector );
         _injector.map( ControlFlowMapping ).toValue( _classUnderTest );
         _injector.map( ClassRegistry ).toValue( this );
         _injector.map( SimpleControlFlow ).toType( MockSingleFlowGroup );

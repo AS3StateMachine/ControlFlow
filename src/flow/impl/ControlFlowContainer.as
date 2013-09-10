@@ -7,12 +7,12 @@ import flow.dsl.SimpleControlFlowMapping;
 
 import org.swiftsuspenders.Injector;
 
-public class ControlFlow implements ControlFlowMapping , Executable
+public class ControlFlowContainer implements ControlFlowMapping , Executable
 {
     internal var injector:Injector;
     internal const blocks:Vector.<Executable> = new Vector.<Executable>();
 
-    public function ControlFlow( injector:Injector )
+    public function ControlFlowContainer( injector:Injector )
     {
         this.injector = injector.createChildInjector();
         this.injector.map( Injector ).toValue( this.injector );

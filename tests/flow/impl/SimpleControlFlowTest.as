@@ -18,7 +18,7 @@ public class SimpleControlFlowTest implements ClassRegistry
 {
     private var _classUnderTest:SimpleControlFlow;
     private var _injector:Injector;
-    private var _parent:ControlFlow;
+    private var _parent:ControlFlowContainer;
     private var _executor:Executor;
     private var _registeredClasses:Vector.<Class>;
 
@@ -28,7 +28,7 @@ public class SimpleControlFlowTest implements ClassRegistry
         _registeredClasses = new Vector.<Class>();
         _injector = new Injector();
         _injector.map( ClassRegistry ).toValue( this );
-        _parent = new ControlFlow( _injector );
+        _parent = new ControlFlowContainer( _injector );
         _executor = new Executor( _injector );
         _classUnderTest = new SimpleControlFlow( _parent, _executor );
 

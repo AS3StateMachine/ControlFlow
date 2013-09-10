@@ -20,7 +20,7 @@ public class TriggerMap
 
     public function map( trigger:Trigger ):ControlFlowMapping
     {
-        const flowGroup:ControlFlow = injector.getOrCreateNewInstance( ControlFlow );
+        const flowGroup:ControlFlowContainer = injector.getOrCreateNewInstance( ControlFlowContainer );
 
         trigger.add( flowGroup );
 

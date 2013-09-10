@@ -1,10 +1,10 @@
 package flow.impl.support.mappings
 {
-import flow.impl.ControlFlow;
+import flow.impl.ControlFlowContainer;
 
 import org.swiftsuspenders.Injector;
 
-public class MockControlFlow extends ControlFlow
+public class MockControlFlowContainer extends ControlFlowContainer
 {
     public var executeCalled:int = 0;
 
@@ -14,7 +14,7 @@ public class MockControlFlow extends ControlFlow
         executeCalled++;
     }
 
-    public function MockControlFlow( injector:Injector )
+    public function MockControlFlowContainer( injector:Injector )
     {
         super( injector );
     }
