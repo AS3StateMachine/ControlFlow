@@ -10,7 +10,7 @@ import org.hamcrest.object.instanceOf;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-public class MapTest
+public class ControlFlowMapTest
 {
     private var _classUnderTest:ControlFlowMap;
     private var _injector:Injector;
