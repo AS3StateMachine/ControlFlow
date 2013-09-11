@@ -23,7 +23,7 @@ public class EventMap implements EventControlFlowMap
     }
 
 
-    public function on( type:String, eventClass:Class ):ControlFlowMapping
+    public function on( type:String, eventClass:Class = null ):ControlFlowMapping
     {
         _triggers[type] = new EventTrigger( type, eventClass ).setInjector( injector );
         return _triggerMap.map( _triggers[type] );
