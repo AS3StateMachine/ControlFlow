@@ -6,28 +6,31 @@ import org.hamcrest.object.equalTo;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-import statemachine.flow.impl.support.ClassRegistry;
-import statemachine.flow.impl.support.cmds.MockCommandOne;
-import statemachine.flow.impl.support.cmds.MockCommandThree;
-import statemachine.flow.impl.support.cmds.MockCommandTwo;
-import statemachine.flow.impl.support.guards.GrumpyGuard;
-import statemachine.flow.impl.support.guards.HappyGuard;
-import statemachine.flow.impl.support.guards.JoyfulGuard;
+import statemachine.flow.api.Payload;
+import statemachine.support.TestEvent;
+import statemachine.support.TestRegistry;
+import statemachine.support.cmds.CommandWithTestEvent;
+import statemachine.support.cmds.MockCommandOne;
+import statemachine.support.cmds.MockCommandThree;
+import statemachine.support.cmds.MockCommandTwo;
+import statemachine.support.guards.GrumpyGuard;
+import statemachine.support.guards.HappyGuard;
+import statemachine.support.guards.JoyfulGuard;
 
-public class SimpleControlFlowTest implements ClassRegistry
+public class SimpleControlFlowTest implements TestRegistry
 {
     private var _classUnderTest:SimpleControlFlow;
     private var _injector:Injector;
     private var _parent:ControlFlowContainer;
     private var _executor:Executor;
-    private var _registeredClasses:Vector.<Class>;
+    private var _registeredClasses:Array;
 
     [Before]
     public function before():void
     {
-        _registeredClasses = new Vector.<Class>();
+        _registeredClasses = [];
         _injector = new Injector();
-        _injector.map( ClassRegistry ).toValue( this );
+        _injector.map( TestRegistry ).toValue( this );
         _parent = new ControlFlowContainer( _injector );
         _executor = new Executor( _injector );
         _classUnderTest = new SimpleControlFlow( _parent, _executor );
@@ -79,14 +82,26 @@ public class SimpleControlFlowTest implements ClassRegistry
     [Test]
     public function execute_executes_commandGroup():void
     {
-        _classUnderTest.executeAll( MockCommandOne );
-        _classUnderTest.execute();
-        assertThat( _registeredClasses.length, equalTo( 1 ) );
+        _classUnderTest.executeAll( MockCommandOne, MockCommandThree );
+        _classUnderTest.executeBlock( null );
+        assertThat(
+                _registeredClasses,
+                array(
+                        strictlyEqualTo( MockCommandOne ),
+                        strictlyEqualTo( MockCommandThree )
+                ) );
     }
 
-    public function register( c:Class ):void
+    [Test] // will throw error if fails
+    public function execute_passes_payload_to_Executor():void
     {
-        _registeredClasses.push( c );
+        _classUnderTest.executeAll( CommandWithTestEvent );
+        _classUnderTest.executeBlock( new Payload().add( new TestEvent("hello"), TestEvent ) );
+    }
+
+    public function register( value:* ):void
+    {
+        _registeredClasses.push( value );
     }
 }
 }

@@ -8,18 +8,18 @@ import org.hamcrest.collection.array;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-import statemachine.flow.api.EventControlFlowMap;
-import statemachine.flow.impl.support.ClassRegistry;
-import statemachine.flow.impl.support.TestEvent;
-import statemachine.flow.impl.support.cmds.MockCommandOne;
-import statemachine.flow.impl.support.cmds.MockCommandThree;
-import statemachine.flow.impl.support.cmds.MockCommandTwo;
-import statemachine.flow.impl.support.guards.OnlyIfGoodbye;
-import statemachine.flow.impl.support.guards.OnlyIfHello;
+import statemachine.flow.api.EventFlowMap;
+import statemachine.support.TestEvent;
+import statemachine.support.TestRegistry;
+import statemachine.support.cmds.MockCommandOne;
+import statemachine.support.cmds.MockCommandThree;
+import statemachine.support.cmds.MockCommandTwo;
+import statemachine.support.guards.OnlyIfGoodbye;
+import statemachine.support.guards.OnlyIfHello;
 
-public class IntegrationTest implements ClassRegistry
+public class IntegrationTest implements TestRegistry
 {
-    private var _classUnderTest:EventControlFlowMap;
+    private var _classUnderTest:EventFlowMap;
     private var _injector:Injector;
     private var _commands:Vector.<Class>;
     private var _dispatcher:IEventDispatcher;
@@ -31,11 +31,11 @@ public class IntegrationTest implements ClassRegistry
         _commands = new Vector.<Class>();
         _injector = new Injector();
         _dispatcher = new EventDispatcher();
-        _classUnderTest = new EventMap( _injector );
-        _injector.map( ClassRegistry ).toValue( this );
+        _injector.map( TestRegistry ).toValue( this );
         _injector.map( IEventDispatcher ).toValue( _dispatcher );
         _injector.map( Injector ).toValue( _injector );
         _injector.map( Executor );
+        _classUnderTest = new EventMap( _injector );
     }
 
 
@@ -229,9 +229,9 @@ public class IntegrationTest implements ClassRegistry
     }
 
 
-    public function register( c:Class ):void
+    public function register( value:* ):void
     {
-        _commands.push( c );
+        _commands.push( value );
     }
 
     private function sayHello():void

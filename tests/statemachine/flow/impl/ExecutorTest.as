@@ -8,14 +8,18 @@ import org.hamcrest.object.isTrue;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-import statemachine.flow.impl.support.ClassRegistry;
-import statemachine.flow.impl.support.cmds.MockCommandOne;
-import statemachine.flow.impl.support.cmds.MockCommandThree;
-import statemachine.flow.impl.support.cmds.MockCommandTwo;
-import statemachine.flow.impl.support.guards.GrumpyGuard;
-import statemachine.flow.impl.support.guards.HappyGuard;
+import statemachine.flow.api.Payload;
+import statemachine.support.TestEvent;
+import statemachine.support.TestRegistry;
+import statemachine.support.cmds.CommandWithTestEvent;
+import statemachine.support.cmds.MockCommandOne;
+import statemachine.support.cmds.MockCommandThree;
+import statemachine.support.cmds.MockCommandTwo;
+import statemachine.support.guards.GrumpyGuard;
+import statemachine.support.guards.HappyGuard;
+import statemachine.support.guards.OnlyIfGoodbye;
 
-public class ExecutorTest implements ClassRegistry
+public class ExecutorTest implements TestRegistry
 {
     private var _injector:Injector;
     private var _classUnderTest:Executor;
@@ -27,7 +31,7 @@ public class ExecutorTest implements ClassRegistry
         _executedCommands = new Vector.<Class>();
         _injector = new Injector();
         _classUnderTest = new Executor( _injector );
-        _injector.map( ClassRegistry ).toValue( this );
+        _injector.map( TestRegistry ).toValue( this );
     }
 
     [Test]
@@ -108,9 +112,53 @@ public class ExecutorTest implements ClassRegistry
                 ) );
     }
 
-    public function register( commandClass:Class ):void
+    [Test]
+    public function test_payload_gets_injected():void
     {
-        _executedCommands.push( commandClass );
+        const payload:Payload = new Payload().add( new TestEvent( "Goodbye" ), TestEvent );
+        const group:ExecutionData = new ExecutionData();
+        group.payload = payload;
+        group.pushCommand( CommandWithTestEvent );
+        group.pushGuard( OnlyIfGoodbye );
+
+        _classUnderTest.execute( group );
+
+
+    }
+
+    [Test]
+    public function test_payload_is_removed_after_execution_approved():void
+    {
+        const payload:Payload = new Payload().add( new TestEvent( "Goodbye" ), TestEvent );
+        const group:ExecutionData = new ExecutionData();
+        group.payload = payload;
+        group.pushCommand( CommandWithTestEvent );
+        group.pushGuard( OnlyIfGoodbye );
+
+        _classUnderTest.execute( group );
+
+        assertThat( _injector.hasMapping( TestEvent ), isFalse() );
+
+    }
+
+    [Test]
+    public function test_payload_is_removed_when_execution_declined():void
+    {
+        const payload:Payload = new Payload().add( new TestEvent( "Hello" ), TestEvent );
+        const group:ExecutionData = new ExecutionData();
+        group.payload = payload;
+        group.pushCommand( CommandWithTestEvent );
+        group.pushGuard( OnlyIfGoodbye );
+
+        _classUnderTest.execute( group );
+
+        assertThat( _injector.hasMapping( TestEvent ), isFalse() );
+
+    }
+
+    public function register( value:* ):void
+    {
+        _executedCommands.push( value );
     }
 }
 }

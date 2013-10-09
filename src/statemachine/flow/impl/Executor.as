@@ -14,7 +14,12 @@ public class Executor
 
     public function execute( executionGroup:ExecutionData ):Boolean
     {
-        if ( executionGroup.guards.length > 0 && !approveGuards( executionGroup.guards ) ) return false;
+        executionGroup.injectPayload( _injector);
+
+        if ( executionGroup.guards.length > 0 && !approveGuards( executionGroup.guards ) ) {
+            executionGroup.removePayload( _injector);
+            return false;
+        }
 
         const commands:Vector.<Class> = executionGroup.commands;
 
@@ -23,6 +28,8 @@ public class Executor
             const cmd:* = _injector.instantiateUnmapped( cmdClass );
             cmd.execute();
         }
+
+        executionGroup.removePayload( _injector);
 
         return true;
     }
@@ -33,7 +40,6 @@ public class Executor
         {
             const guard:* = _injector.instantiateUnmapped( guardClass );
             if ( !guard.approve() ) return false;
-
         }
         return true;
     }

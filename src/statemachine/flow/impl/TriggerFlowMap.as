@@ -5,20 +5,20 @@ import flash.utils.Dictionary;
 import org.swiftsuspenders.Injector;
 
 import statemachine.flow.core.Trigger;
-import statemachine.flow.dsl.ControlFlowMapping;
+import statemachine.flow.builders.FlowMapping;
 
-public class TriggerMap
+public class TriggerFlowMap
 {
     internal var injector:Injector;
 
     private const _map:Dictionary = new Dictionary();
 
-    public function TriggerMap( injector:Injector )
+    public function TriggerFlowMap( injector:Injector )
     {
         this.injector = injector;
     }
 
-    public function map( trigger:Trigger ):ControlFlowMapping
+    public function map( trigger:Trigger ):FlowMapping
     {
         const flowGroup:ControlFlowContainer = injector.getOrCreateNewInstance( ControlFlowContainer );
 
@@ -34,6 +34,11 @@ public class TriggerMap
         if ( _map[trigger] == null ) return;
         trigger.remove();
         delete _map[trigger];
+    }
+
+    public function has( trigger:Trigger ):Boolean
+    {
+        return (_map[trigger] != null);
     }
 
 

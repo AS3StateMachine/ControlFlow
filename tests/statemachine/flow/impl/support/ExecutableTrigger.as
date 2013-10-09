@@ -1,14 +1,16 @@
 package statemachine.flow.impl.support
 {
-import statemachine.flow.core.Executable;
+import statemachine.flow.api.Payload;
+import statemachine.flow.core.ExecutableBlock;
 import statemachine.flow.core.Trigger;
 
-public class ExecutableTrigger implements Trigger, Executable
+public class ExecutableTrigger implements Trigger, ExecutableBlock
 {
     public var numbExecutions:int = 0;
-    private var _client:Executable;
+    public var receivedPayload:Payload;
+    private var _client:ExecutableBlock;
 
-    public function add( client:Executable ):void
+    public function add( client:ExecutableBlock ):void
     {
         _client = client;
     }
@@ -18,10 +20,11 @@ public class ExecutableTrigger implements Trigger, Executable
         _client = null;
     }
 
-    public function execute():void
+    public function executeBlock( payload:Payload ):void
     {
+        receivedPayload = payload;
         numbExecutions++;
-        (_client != null) && _client.execute();
+        (_client != null) && _client.executeBlock(null);
     }
 }
 }

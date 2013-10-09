@@ -4,31 +4,34 @@ import org.hamcrest.assertThat;
 import org.hamcrest.collection.array;
 import org.hamcrest.core.not;
 import org.hamcrest.object.equalTo;
+import org.hamcrest.object.hasPropertyWithValue;
 import org.hamcrest.object.instanceOf;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-import statemachine.flow.dsl.ControlFlowMapping;
-import statemachine.flow.dsl.OptionalControlFlowMapping;
-import statemachine.flow.dsl.SimpleControlFlowMapping;
-import statemachine.flow.impl.support.ClassRegistry;
+import statemachine.flow.api.Payload;
+
+import statemachine.flow.builders.FlowMapping;
+import statemachine.flow.builders.OptionalFlowMapping;
+import statemachine.flow.builders.SimpleFlowMapping;
+import statemachine.support.TestRegistry;
 import statemachine.flow.impl.support.mappings.MockOptionFlowGroup;
 import statemachine.flow.impl.support.mappings.MockSingleFlowGroup;
 
-public class ControlFlowContainerTest implements ClassRegistry
+public class ControlFlowContainerTest implements TestRegistry
 {
     private var _classUnderTest:ControlFlowContainer;
     private var _injector:Injector;
-    private var _executables:Vector.<Class>;
+    private var _executables:Array;
 
     [Before]
     public function before():void
     {
-        _executables = new Vector.<Class>();
+        _executables = [];
         _injector = new Injector();
         _classUnderTest = new ControlFlowContainer( _injector );
-        _injector.map( ControlFlowMapping ).toValue( _classUnderTest );
-        _injector.map( ClassRegistry ).toValue( this );
+        _injector.map( FlowMapping ).toValue( _classUnderTest );
+        _injector.map( TestRegistry ).toValue( this );
         _injector.map( SimpleControlFlow ).toType( MockSingleFlowGroup );
         _injector.map( OptionalControlFlow ).toType( MockOptionFlowGroup );
     }
@@ -53,13 +56,13 @@ public class ControlFlowContainerTest implements ClassRegistry
     [Test]
     public function constructor_maps_ControlFlowMapping_to_self_in_childInjector():void
     {
-        assertThat( _classUnderTest.injector.getInstance( ControlFlowMapping ), strictlyEqualTo( _classUnderTest ) );
+        assertThat( _classUnderTest.injector.getInstance( FlowMapping ), strictlyEqualTo( _classUnderTest ) );
     }
 
     [Test]
     public function always_property_returns_instanceOf_SingleFlowMapping():void
     {
-        assertThat( _classUnderTest.always, instanceOf( SimpleControlFlowMapping ) )
+        assertThat( _classUnderTest.always, instanceOf( SimpleFlowMapping ) )
     }
 
     [Test]
@@ -77,7 +80,7 @@ public class ControlFlowContainerTest implements ClassRegistry
     [Test]
     public function either_property_returns_instanceOf_CaseFlowMapping():void
     {
-        assertThat( _classUnderTest.either, instanceOf( OptionalControlFlowMapping ) )
+        assertThat( _classUnderTest.either, instanceOf( OptionalFlowMapping ) )
     }
 
     [Test]
@@ -100,22 +103,43 @@ public class ControlFlowContainerTest implements ClassRegistry
                 .and.always
                 .and.either;
 
-        _classUnderTest.execute();
+        _classUnderTest.executeBlock( null );
 
         assertThat( _executables.length, equalTo( 3 ) )
         assertThat(
                 _executables
                 , array(
-                        strictlyEqualTo( MockOptionFlowGroup ),
-                        strictlyEqualTo( MockSingleFlowGroup ),
-                        strictlyEqualTo( MockOptionFlowGroup )
+                        instanceOf( MockOptionFlowGroup ),
+                        instanceOf( MockSingleFlowGroup ),
+                        instanceOf( MockOptionFlowGroup )
+                ) );
+    }
+    [Test]
+    public function execute_passes_payload_to_executables():void
+    {
+        _classUnderTest
+                .either
+                .and.always
+                .and.either;
+
+        const payload:Payload = new Payload()
+        _classUnderTest.executeBlock( payload );
+
+        assertThat( _executables.length, equalTo( 3 ) )
+        assertThat(
+                _executables
+                , array(
+                        hasPropertyWithValue( "receivedPayload", strictlyEqualTo(payload) ),
+                        hasPropertyWithValue( "receivedPayload", strictlyEqualTo(payload) ),
+                        hasPropertyWithValue( "receivedPayload", strictlyEqualTo(payload) )
                 ) );
     }
 
 
-    public function register( c:Class ):void
+
+    public function register( value:* ):void
     {
-        _executables.push( c );
+        _executables.push( value );
     }
 }
 }

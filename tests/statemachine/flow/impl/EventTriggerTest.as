@@ -2,21 +2,19 @@ package statemachine.flow.impl
 {
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.events.IEventDispatcher;
-import flash.events.ProgressEvent;
 
 import org.hamcrest.assertThat;
 import org.hamcrest.object.equalTo;
-import org.hamcrest.object.isFalse;
+import org.hamcrest.object.instanceOf;
 import org.hamcrest.object.strictlyEqualTo;
-import org.swiftsuspenders.Injector;
 
+import statemachine.flow.api.Payload;
 import statemachine.flow.impl.support.ExecutableTrigger;
+import statemachine.support.TestEvent;
 
 public class EventTriggerTest
 {
     private var _classUnderTest:EventTrigger;
-    private var _injector:Injector;
     private var _dispatcher:EventDispatcher;
     private var _executable:ExecutableTrigger;
 
@@ -24,13 +22,10 @@ public class EventTriggerTest
     public function before():void
     {
         _dispatcher = new EventDispatcher()
-        _injector = new Injector();
-        _injector.map( IEventDispatcher ).toValue( _dispatcher );
-
     }
 
     [Test]
-    public function by_default_client_not_executed():void
+    public function by_default__client_not_executed():void
     {
         configure( Event.COMPLETE, null );
         assertThat( _executable.numbExecutions, equalTo( 0 ) );
@@ -64,44 +59,36 @@ public class EventTriggerTest
     }
 
     [Test]
-    public function event_is_mapped_as_Event_during_execution():void
+    public function client_is_passed_instanceOf_payload_when_triggered():void
     {
-        var mappedEvent:Event;
-        const event:Event = new ProgressEvent( ProgressEvent.PROGRESS, false, false, 50, 100 );
-        configure( ProgressEvent.PROGRESS, null );
-
-        _classUnderTest.preExecute = function ():void
-        {
-            mappedEvent = _classUnderTest.injector.getInstance( Event );
-        }
+        const event:Event = new TestEvent( "HELLO" );
+        configure( TestEvent.TESTING, TestEvent );
 
         dispatch( event );
-        assertThat( mappedEvent, strictlyEqualTo( event ) );
+
+        assertThat( _executable.receivedPayload, instanceOf( Payload ) );
     }
 
     [Test]
-    public function event_is_mapped_as_eventClass_if_parameter_is_passed():void
+    public function client_payload_contains_Event_by_default():void
     {
-        var mappedEvent:Event;
-        const event:Event = new ProgressEvent( ProgressEvent.PROGRESS, false, false, 50, 100 );
-        configure( ProgressEvent.PROGRESS, ProgressEvent );
-
-        _classUnderTest.preExecute = function ():void
-        {
-            mappedEvent = _classUnderTest.injector.getInstance( ProgressEvent );
-        }
+        const event:Event = new TestEvent( "HELLO" );
+        configure( TestEvent.TESTING, null );
 
         dispatch( event );
-        assertThat( mappedEvent, strictlyEqualTo( event ) );
+
+        assertThat( _executable.receivedPayload.get( Event ), strictlyEqualTo( event ) );
     }
 
     [Test]
-    public function event_is_unmapped_after_execution():void
+    public function client_payload_contains_eventClass_if_passed():void
     {
-        const event:Event = new ProgressEvent( ProgressEvent.PROGRESS, false, false, 50, 100 );
-        configure( ProgressEvent.PROGRESS, null );
+        const event:Event = new TestEvent( "HELLO" );
+        configure( TestEvent.TESTING, TestEvent );
+
         dispatch( event );
-        assertThat( _classUnderTest.injector.hasMapping( Event ), isFalse() );
+
+        assertThat( _executable.receivedPayload.get( TestEvent ), strictlyEqualTo( event ) );
     }
 
     private function dispatch( event:Event ):void
@@ -113,7 +100,7 @@ public class EventTriggerTest
     {
         _executable = new ExecutableTrigger();
         _classUnderTest = new EventTrigger( type, eventClass );
-        _classUnderTest.setInjector( _injector );
+        _classUnderTest.setDispatcher( _dispatcher );
         _classUnderTest.add( _executable )
     }
 

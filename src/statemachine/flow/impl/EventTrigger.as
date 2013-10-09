@@ -3,17 +3,15 @@ package statemachine.flow.impl
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 
-import org.swiftsuspenders.Injector;
-
-import statemachine.flow.core.Executable;
+import statemachine.flow.api.Payload;
+import statemachine.flow.core.ExecutableBlock;
 import statemachine.flow.core.Trigger;
 
 public class EventTrigger implements Trigger
 {
-    internal var injector:Injector;
-    internal var preExecute:Function
+    //internal var injector:Injector;
     private var _dispatcher:IEventDispatcher;
-    private var _client:Executable;
+    private var _client:ExecutableBlock;
     private var _type:String;
     private var _eventClass:Class;
 
@@ -23,10 +21,9 @@ public class EventTrigger implements Trigger
         _eventClass = eventClass;
     }
 
-    public function setInjector( value:Injector ):EventTrigger
+    public function setDispatcher( value:IEventDispatcher ):EventTrigger
     {
-        injector = value;
-        _dispatcher = injector.getInstance( IEventDispatcher );
+        _dispatcher = value;
         _dispatcher.addEventListener( _type, handleEvent );
         return this;
     }
@@ -34,23 +31,19 @@ public class EventTrigger implements Trigger
     private function handleEvent( event:Event ):void
     {
         if ( _client == null )return;
-
         const eventClass:Class = (_eventClass == null) ? Event : _eventClass;
-        injector.map( eventClass ).toValue( event );
-        (preExecute != null) && preExecute();
-        _client.execute();
-
-        injector.unmap( eventClass );
+        _client.executeBlock( new Payload().add( event, eventClass ) );
     }
 
 
-    public function add( client:Executable ):void
+    public function add( client:ExecutableBlock ):void
     {
         _client = client;
     }
 
     public function remove():void
     {
+        _dispatcher.removeEventListener( _type, handleEvent );
         _client = null;
     }
 }

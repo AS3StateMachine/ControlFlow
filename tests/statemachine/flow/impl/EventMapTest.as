@@ -10,10 +10,10 @@ import org.hamcrest.object.isTrue;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-import statemachine.flow.impl.support.ClassRegistry;
-import statemachine.flow.impl.support.cmds.MockCommandOne;
+import statemachine.support.TestRegistry;
+import statemachine.support.cmds.MockCommandOne;
 
-public class EventMapTest implements ClassRegistry
+public class EventMapTest implements TestRegistry
 {
     private var _classUnderTest:EventMap;
     private var _injector:Injector;
@@ -26,7 +26,7 @@ public class EventMapTest implements ClassRegistry
         _injector = new Injector();
         _dispatcher = new EventDispatcher();
         _injector.map( IEventDispatcher ).toValue( _dispatcher );
-        _injector.map( ClassRegistry ).toValue( this );
+        _injector.map( TestRegistry ).toValue( this );
         _classUnderTest = new EventMap( _injector );
         _executables = new Vector.<Class>();
     }
@@ -82,9 +82,9 @@ public class EventMapTest implements ClassRegistry
     }
 
 
-    public function register( c:Class ):void
+    public function register( value:* ):void
     {
-        _executables.push( c );
+        _executables.push( value );
     }
 }
 }

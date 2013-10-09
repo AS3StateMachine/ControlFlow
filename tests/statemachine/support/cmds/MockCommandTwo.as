@@ -1,11 +1,11 @@
-package statemachine.flow.impl.support.cmds
+package statemachine.support.cmds
 {
-import statemachine.flow.impl.support.ClassRegistry;
+import statemachine.support.TestRegistry;
 
 public class MockCommandTwo
 {
     [Inject]
-    public var commandRegistry:ClassRegistry;
+    public var commandRegistry:TestRegistry;
 
     public function execute():void
     {

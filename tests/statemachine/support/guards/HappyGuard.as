@@ -1,6 +1,6 @@
-package statemachine.flow.impl.support.guards
+package statemachine.support.guards
 {
-public class JoyfulGuard
+public class HappyGuard
 {
     public function approve():Boolean
     {

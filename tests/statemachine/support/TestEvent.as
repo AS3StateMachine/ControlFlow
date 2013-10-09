@@ -1,4 +1,4 @@
-package statemachine.flow.impl.support
+package statemachine.support
 {
 import flash.events.Event;
 

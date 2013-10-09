@@ -1,6 +1,6 @@
-package statemachine.flow.impl.support.guards
+package statemachine.support.guards
 {
-import statemachine.flow.impl.support.TestEvent;
+import statemachine.support.TestEvent;
 
 public class OnlyIfGoodbye
 {

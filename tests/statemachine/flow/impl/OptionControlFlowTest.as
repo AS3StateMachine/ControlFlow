@@ -7,15 +7,19 @@ import org.hamcrest.object.nullValue;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
-import statemachine.flow.impl.support.ClassRegistry;
-import statemachine.flow.impl.support.cmds.MockCommandOne;
-import statemachine.flow.impl.support.cmds.MockCommandThree;
-import statemachine.flow.impl.support.cmds.MockCommandTwo;
-import statemachine.flow.impl.support.guards.GrumpyGuard;
-import statemachine.flow.impl.support.guards.HappyGuard;
-import statemachine.flow.impl.support.guards.JoyfulGuard;
+import statemachine.flow.api.Payload;
+import statemachine.support.TestEvent;
 
-public class OptionControlFlowTest implements ClassRegistry
+import statemachine.support.TestRegistry;
+import statemachine.support.cmds.CommandWithTestEvent;
+import statemachine.support.cmds.MockCommandOne;
+import statemachine.support.cmds.MockCommandThree;
+import statemachine.support.cmds.MockCommandTwo;
+import statemachine.support.guards.GrumpyGuard;
+import statemachine.support.guards.HappyGuard;
+import statemachine.support.guards.JoyfulGuard;
+
+public class OptionControlFlowTest implements TestRegistry
 {
     private var _classUnderTest:OptionalControlFlow;
     private var _injector:Injector;
@@ -28,7 +32,7 @@ public class OptionControlFlowTest implements ClassRegistry
     {
         _registeredClasses = new Vector.<Class>();
         _injector = new Injector();
-        _injector.map( ClassRegistry ).toValue( this );
+        _injector.map( TestRegistry ).toValue( this );
         _parent = new ControlFlowContainer( _injector );
         _executor = new Executor( _injector );
 
@@ -139,7 +143,7 @@ public class OptionControlFlowTest implements ClassRegistry
     }
 
     [Test]
-    public function or_property_sets_currentCommandGroup_to_nulls():void
+    public function or_property_sets_currentCommandGroup_to_null():void
     {
         _classUnderTest
                 .executeAll( MockCommandOne, MockCommandThree, MockCommandTwo )
@@ -156,7 +160,7 @@ public class OptionControlFlowTest implements ClassRegistry
                 .or.executeAll( MockCommandOne ).onApproval( HappyGuard )
                 .or.executeAll( MockCommandTwo );
 
-        _classUnderTest.execute();
+        _classUnderTest.executeBlock( null );
 
         assertThat( _registeredClasses.length, equalTo( 1 ) );
         assertThat( _registeredClasses[0], strictlyEqualTo( MockCommandThree ) );
@@ -172,7 +176,7 @@ public class OptionControlFlowTest implements ClassRegistry
                 .or.executeAll( MockCommandOne ).onApproval( HappyGuard )
                 .or.executeAll( MockCommandTwo );
 
-        _classUnderTest.execute();
+        _classUnderTest.executeBlock( null );
 
         assertThat( _registeredClasses.length, equalTo( 1 ) );
         assertThat( _registeredClasses[0], strictlyEqualTo( MockCommandOne ) );
@@ -187,17 +191,25 @@ public class OptionControlFlowTest implements ClassRegistry
                 .or.executeAll( MockCommandOne ).onApproval( GrumpyGuard )
                 .or.executeAll( MockCommandTwo );
 
-        _classUnderTest.execute();
+        _classUnderTest.executeBlock( null );
 
         assertThat( _registeredClasses.length, equalTo( 1 ) );
         assertThat( _registeredClasses[0], strictlyEqualTo( MockCommandTwo ) );
 
     }
 
-
-    public function register( c:Class ):void
+    [Test] // will throw error if fails
+    public function execute_passes_payload_to_Executor():void
     {
-        _registeredClasses.push( c );
+        _classUnderTest.executeAll( CommandWithTestEvent );
+        _classUnderTest.executeBlock( new Payload().add( new TestEvent("hello"), TestEvent ) );
+    }
+
+
+
+    public function register( value:* ):void
+    {
+        _registeredClasses.push( value );
     }
 }
 }

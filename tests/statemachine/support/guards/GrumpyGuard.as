@@ -1,4 +1,4 @@
-package statemachine.flow.impl.support.guards
+package statemachine.support.guards
 {
 public class GrumpyGuard
 {

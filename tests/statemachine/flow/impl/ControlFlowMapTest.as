@@ -5,13 +5,13 @@ import org.hamcrest.object.equalTo;
 import org.hamcrest.object.instanceOf;
 import org.swiftsuspenders.Injector;
 
-import statemachine.flow.dsl.ControlFlowMapping;
+import statemachine.flow.builders.FlowMapping;
 import statemachine.flow.impl.support.ExecutableTrigger;
 import statemachine.flow.impl.support.mappings.MockControlFlowContainer;
 
 public class ControlFlowMapTest
 {
-    private var _classUnderTest:TriggerMap;
+    private var _classUnderTest:TriggerFlowMap;
     private var _injector:Injector;
 
     [Before]
@@ -21,14 +21,14 @@ public class ControlFlowMapTest
         _injector.map( ExecutableTrigger ).asSingleton();
         _injector.map( Injector ).toValue( _injector );
         _injector.map( ControlFlowContainer ).toSingleton( MockControlFlowContainer );
-        _classUnderTest = new TriggerMap( _injector );
+        _classUnderTest = new TriggerFlowMap( _injector );
     }
 
 
     [Test]
     public function on_returns_instanceOf_FlowGroupMapping():void
     {
-        assertThat( _classUnderTest.map( new ExecutableTrigger() ), instanceOf( ControlFlowMapping ) )
+        assertThat( _classUnderTest.map( new ExecutableTrigger() ), instanceOf( FlowMapping ) )
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class ControlFlowMapTest
         const trigger:ExecutableTrigger = _injector.getInstance( ExecutableTrigger );
         const flowGroup:MockControlFlowContainer = _injector.getInstance( ControlFlowContainer );
         _classUnderTest.map( trigger );
-        trigger.execute();
+        trigger.executeBlock( null );
         assertThat( flowGroup.executeCalled, equalTo( 1 ) );
     }
 
@@ -48,7 +48,7 @@ public class ControlFlowMapTest
         const flowGroup:MockControlFlowContainer = _injector.getInstance( ControlFlowContainer );
         _classUnderTest.map( trigger );
         _classUnderTest.unmap( trigger );
-        trigger.execute();
+        trigger.executeBlock( null );
         assertThat( flowGroup.executeCalled, equalTo( 0 ) );
     }
 }
