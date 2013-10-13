@@ -6,18 +6,18 @@ public class Executor
 {
     private var _injector:Injector;
 
-
     public function Executor( injector:Injector )
     {
-        _injector = injector;
+        _injector = injector.createChildInjector();
     }
 
     public function execute( executionGroup:ExecutionData ):Boolean
     {
-        executionGroup.injectPayload( _injector);
+        executionGroup.injectPayload( _injector );
 
-        if ( executionGroup.guards.length > 0 && !approveGuards( executionGroup.guards ) ) {
-            executionGroup.removePayload( _injector);
+        if ( executionGroup.guards.length > 0 && !approveGuards( executionGroup.guards ) )
+        {
+            executionGroup.removePayload( _injector );
             return false;
         }
 
@@ -29,7 +29,7 @@ public class Executor
             cmd.execute();
         }
 
-        executionGroup.removePayload( _injector);
+        executionGroup.removePayload( _injector );
 
         return true;
     }

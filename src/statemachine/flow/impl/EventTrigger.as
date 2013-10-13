@@ -9,7 +9,6 @@ import statemachine.flow.core.Trigger;
 
 public class EventTrigger implements Trigger
 {
-    //internal var injector:Injector;
     private var _dispatcher:IEventDispatcher;
     private var _client:ExecutableBlock;
     private var _type:String;
@@ -34,7 +33,6 @@ public class EventTrigger implements Trigger
         const eventClass:Class = (_eventClass == null) ? Event : _eventClass;
         _client.executeBlock( new Payload().add( event, eventClass ) );
     }
-
 
     public function add( client:ExecutableBlock ):void
     {

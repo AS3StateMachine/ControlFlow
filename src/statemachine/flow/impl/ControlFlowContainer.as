@@ -15,7 +15,7 @@ public class ControlFlowContainer implements FlowMapping, ExecutableBlock
 
     public function ControlFlowContainer( injector:Injector )
     {
-        this.injector = injector.createChildInjector();
+        this.injector = injector;
         this.injector.map( Injector ).toValue( this.injector );
         this.injector.map( FlowMapping ).toValue( this );
     }

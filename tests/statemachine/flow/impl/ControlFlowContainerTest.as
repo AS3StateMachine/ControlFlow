@@ -46,13 +46,6 @@ public class ControlFlowContainerTest implements TestRegistry
 
     }
 
-
-    [Test]
-    public function constructor_creates_childInjector():void
-    {
-        assertThat( _classUnderTest.injector.parentInjector, strictlyEqualTo( _injector ) );
-    }
-
     [Test]
     public function constructor_maps_ControlFlowMapping_to_self_in_childInjector():void
     {

@@ -18,7 +18,7 @@ public class EventMap implements EventFlowMap
 
     public function EventMap( injector:Injector )
     {
-        this.injector = injector.createChildInjector();
+        this.injector = injector;
         this.injector.map( Injector ).toValue( this.injector );
         this.injector.map( Executor );
         _dispatcher = this.injector.getInstance( IEventDispatcher );

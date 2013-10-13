@@ -32,12 +32,6 @@ public class EventMapTest implements TestRegistry
     }
 
     [Test]
-    public function constructor_creates_childInjector():void
-    {
-        assertThat( _classUnderTest.injector.parentInjector, strictlyEqualTo( _injector ) );
-    }
-
-    [Test]
     public function constructor_injects_childInjector_as_Injector():void
     {
         assertThat( _classUnderTest.injector.getInstance( Injector ), strictlyEqualTo( _classUnderTest.injector ) );
