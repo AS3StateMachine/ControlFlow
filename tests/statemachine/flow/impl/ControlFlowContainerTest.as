@@ -4,52 +4,27 @@ import org.hamcrest.assertThat;
 import org.hamcrest.collection.array;
 import org.hamcrest.core.not;
 import org.hamcrest.object.equalTo;
-import org.hamcrest.object.hasPropertyWithValue;
 import org.hamcrest.object.instanceOf;
 import org.hamcrest.object.strictlyEqualTo;
-import org.swiftsuspenders.Injector;
 
 import statemachine.flow.api.Payload;
-
-import statemachine.flow.builders.FlowMapping;
 import statemachine.flow.builders.OptionalFlowMapping;
 import statemachine.flow.builders.SimpleFlowMapping;
-import statemachine.support.TestRegistry;
-import statemachine.flow.impl.support.mappings.MockOptionFlowGroup;
-import statemachine.flow.impl.support.mappings.MockSingleFlowGroup;
+import statemachine.flow.impl.support.mappings.MockExecutor;
+import statemachine.support.cmds.MockCommandOne;
+import statemachine.support.cmds.MockCommandThree;
+import statemachine.support.cmds.MockCommandTwo;
 
-public class ControlFlowContainerTest implements TestRegistry
+public class ControlFlowContainerTest
 {
     private var _classUnderTest:ControlFlowContainer;
-    private var _injector:Injector;
-    private var _executables:Array;
+    private var _executor:MockExecutor;
 
     [Before]
     public function before():void
     {
-        _executables = [];
-        _injector = new Injector();
-        _classUnderTest = new ControlFlowContainer( _injector );
-        _injector.map( FlowMapping ).toValue( _classUnderTest );
-        _injector.map( TestRegistry ).toValue( this );
-        _injector.map( SimpleControlFlow ).toType( MockSingleFlowGroup );
-        _injector.map( OptionalControlFlow ).toType( MockOptionFlowGroup );
-    }
-
-    [After]
-    public function after():void
-    {
-        _executables = null;
-        _classUnderTest = null;
-        _injector.teardown();
-        _injector = null;
-
-    }
-
-    [Test]
-    public function constructor_maps_ControlFlowMapping_to_self_in_childInjector():void
-    {
-        assertThat( _classUnderTest.injector.getInstance( FlowMapping ), strictlyEqualTo( _classUnderTest ) );
+        _executor = new MockExecutor( null );
+        _classUnderTest = new ControlFlowContainer( _executor );
     }
 
     [Test]
@@ -92,47 +67,35 @@ public class ControlFlowContainerTest implements TestRegistry
     public function execute_iterates_through_executables():void
     {
         _classUnderTest
-                .either
-                .and.always
-                .and.either;
+                .either.executeAll( MockCommandOne )
+                .and.always.executeAll( MockCommandTwo )
+                .and.either.executeAll( MockCommandThree );
 
         _classUnderTest.executeBlock( null );
 
-        assertThat( _executables.length, equalTo( 3 ) )
-        assertThat(
-                _executables
-                , array(
-                        instanceOf( MockOptionFlowGroup ),
-                        instanceOf( MockSingleFlowGroup ),
-                        instanceOf( MockOptionFlowGroup )
-                ) );
+        assertThat( _executor.recievedPayload.length, equalTo( 3 ) );
     }
+
     [Test]
     public function execute_passes_payload_to_executables():void
     {
         _classUnderTest
-                .either
-                .and.always
-                .and.either;
+                .either.executeAll( MockCommandOne )
+                .and.always.executeAll( MockCommandTwo )
+                .and.either.executeAll( MockCommandThree );
 
         const payload:Payload = new Payload()
         _classUnderTest.executeBlock( payload );
 
-        assertThat( _executables.length, equalTo( 3 ) )
+        assertThat( _executor.recievedPayload.length, equalTo( 3 ) )
         assertThat(
-                _executables
+                _executor.recievedPayload
                 , array(
-                        hasPropertyWithValue( "receivedPayload", strictlyEqualTo(payload) ),
-                        hasPropertyWithValue( "receivedPayload", strictlyEqualTo(payload) ),
-                        hasPropertyWithValue( "receivedPayload", strictlyEqualTo(payload) )
-                ) );
-    }
-
-
-
-    public function register( value:* ):void
-    {
-        _executables.push( value );
+                        strictlyEqualTo( payload ),
+                        strictlyEqualTo( payload ),
+                        strictlyEqualTo( payload )
+                )
+        );
     }
 }
 }

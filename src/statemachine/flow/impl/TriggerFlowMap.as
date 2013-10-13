@@ -2,30 +2,25 @@ package statemachine.flow.impl
 {
 import flash.utils.Dictionary;
 
-import org.swiftsuspenders.Injector;
-
-import statemachine.flow.core.Trigger;
 import statemachine.flow.builders.FlowMapping;
+import statemachine.flow.core.Trigger;
 
 public class TriggerFlowMap
 {
-    internal var injector:Injector;
-
     private const _map:Dictionary = new Dictionary();
 
-    public function TriggerFlowMap( injector:Injector )
+    public function TriggerFlowMap( executor:Executor )
     {
-        this.injector = injector;
+        _executor = executor;
     }
+
+    private var _executor:Executor;
 
     public function map( trigger:Trigger ):FlowMapping
     {
-        const flowGroup:ControlFlowContainer = injector.getOrCreateNewInstance( ControlFlowContainer );
-
+        const flowGroup:ControlFlowContainer = new ControlFlowContainer( _executor );
         trigger.add( flowGroup );
-
         _map[trigger] = flowGroup;
-
         return flowGroup;
     }
 

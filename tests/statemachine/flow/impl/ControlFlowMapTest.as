@@ -3,27 +3,23 @@ package statemachine.flow.impl
 import org.hamcrest.assertThat;
 import org.hamcrest.object.equalTo;
 import org.hamcrest.object.instanceOf;
-import org.swiftsuspenders.Injector;
 
 import statemachine.flow.builders.FlowMapping;
 import statemachine.flow.impl.support.ExecutableTrigger;
-import statemachine.flow.impl.support.mappings.MockControlFlowContainer;
+import statemachine.flow.impl.support.mappings.MockExecutor;
+import statemachine.support.cmds.MockCommandOne;
 
 public class ControlFlowMapTest
 {
     private var _classUnderTest:TriggerFlowMap;
-    private var _injector:Injector;
+    private var _executor:MockExecutor;
 
     [Before]
     public function before():void
     {
-        _injector = new Injector();
-        _injector.map( ExecutableTrigger ).asSingleton();
-        _injector.map( Injector ).toValue( _injector );
-        _injector.map( ControlFlowContainer ).toSingleton( MockControlFlowContainer );
-        _classUnderTest = new TriggerFlowMap( _injector );
+        _executor = new MockExecutor( null );
+        _classUnderTest = new TriggerFlowMap( _executor );
     }
-
 
     [Test]
     public function on_returns_instanceOf_FlowGroupMapping():void
@@ -34,22 +30,20 @@ public class ControlFlowMapTest
     [Test]
     public function when_trigger_listener_is_called__FlowGroup_is_executed():void
     {
-        const trigger:ExecutableTrigger = _injector.getInstance( ExecutableTrigger );
-        const flowGroup:MockControlFlowContainer = _injector.getInstance( ControlFlowContainer );
-        _classUnderTest.map( trigger );
+        const trigger:ExecutableTrigger = new ExecutableTrigger();
+        _classUnderTest.map( trigger ).always.executeAll( MockCommandOne );
         trigger.executeBlock( null );
-        assertThat( flowGroup.executeCalled, equalTo( 1 ) );
+        assertThat( _executor.recievedPayload.length, equalTo( 1 ) );
     }
 
     [Test]
     public function when_trigger_is_removed__trigger_listener_is_null():void
     {
-        const trigger:ExecutableTrigger = _injector.getInstance( ExecutableTrigger );
-        const flowGroup:MockControlFlowContainer = _injector.getInstance( ControlFlowContainer );
-        _classUnderTest.map( trigger );
+        const trigger:ExecutableTrigger = new ExecutableTrigger();
+        _classUnderTest.map( trigger ).always.executeAll( MockCommandOne );
         _classUnderTest.unmap( trigger );
         trigger.executeBlock( null );
-        assertThat( flowGroup.executeCalled, equalTo( 0 ) );
+        assertThat( _executor.recievedPayload.length, equalTo( 0 ) );
     }
 }
 }

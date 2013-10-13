@@ -2,11 +2,11 @@ package statemachine.flow.impl
 {
 import org.hamcrest.assertThat;
 import org.hamcrest.collection.array;
-import org.hamcrest.object.equalTo;
 import org.hamcrest.object.strictlyEqualTo;
 import org.swiftsuspenders.Injector;
 
 import statemachine.flow.api.Payload;
+import statemachine.flow.impl.support.mappings.MockExecutor;
 import statemachine.support.TestEvent;
 import statemachine.support.TestRegistry;
 import statemachine.support.cmds.CommandWithTestEvent;
@@ -17,24 +17,19 @@ import statemachine.support.guards.GrumpyGuard;
 import statemachine.support.guards.HappyGuard;
 import statemachine.support.guards.JoyfulGuard;
 
-public class SimpleControlFlowTest implements TestRegistry
+public class SimpleControlFlowTest
 {
     private var _classUnderTest:SimpleControlFlow;
-    private var _injector:Injector;
     private var _parent:ControlFlowContainer;
-    private var _executor:Executor;
-    private var _registeredClasses:Array;
+    private var _executor:MockExecutor;
 
     [Before]
     public function before():void
     {
-        _registeredClasses = [];
-        _injector = new Injector();
-        _injector.map( TestRegistry ).toValue( this );
-        _parent = new ControlFlowContainer( _injector );
-        _executor = new Executor( _injector );
-        _classUnderTest = new SimpleControlFlow( _parent, _executor );
-
+        _executor = new MockExecutor( null );
+        _parent = new ControlFlowContainer( _executor );
+        _classUnderTest = new SimpleControlFlow( _executor );
+        _classUnderTest.parent = _parent;
     }
 
     [Test]
@@ -85,7 +80,7 @@ public class SimpleControlFlowTest implements TestRegistry
         _classUnderTest.executeAll( MockCommandOne, MockCommandThree );
         _classUnderTest.executeBlock( null );
         assertThat(
-                _registeredClasses,
+                _executor.recievedData[0].commands,
                 array(
                         strictlyEqualTo( MockCommandOne ),
                         strictlyEqualTo( MockCommandThree )
@@ -96,12 +91,9 @@ public class SimpleControlFlowTest implements TestRegistry
     public function execute_passes_payload_to_Executor():void
     {
         _classUnderTest.executeAll( CommandWithTestEvent );
-        _classUnderTest.executeBlock( new Payload().add( new TestEvent("hello"), TestEvent ) );
+        _classUnderTest.executeBlock( new Payload().add( new TestEvent( "hello" ), TestEvent ) );
     }
 
-    public function register( value:* ):void
-    {
-        _registeredClasses.push( value );
-    }
+
 }
 }

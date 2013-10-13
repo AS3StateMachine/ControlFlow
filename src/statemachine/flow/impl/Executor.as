@@ -8,7 +8,7 @@ public class Executor
 
     public function Executor( injector:Injector )
     {
-        _injector = injector.createChildInjector();
+        _injector = (injector == null) ? null :injector.createChildInjector();
     }
 
     public function execute( executionGroup:ExecutionData ):Boolean

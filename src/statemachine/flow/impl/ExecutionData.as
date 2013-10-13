@@ -8,16 +8,17 @@ public class ExecutionData
 {
     private const _guards:Vector.<Class> = new Vector.<Class>();
     private const _commands:Vector.<Class> = new Vector.<Class>();
+
     private var _payload:Payload;
 
-    public function pushGuard( guard:Class ):void
+    public function get payload():Payload
     {
-        _guards.push( guard );
+        return _payload;
     }
 
-    public function pushCommand( command:Class ):void
+    public function set payload( value:Payload ):void
     {
-        _commands.push( command );
+        _payload = value;
     }
 
     public function get guards():Vector.<Class>
@@ -30,9 +31,14 @@ public class ExecutionData
         return _commands;
     }
 
-    public function set payload( value:Payload ):void
+    public function pushGuard( guard:Class ):void
     {
-        _payload = value;
+        _guards.push( guard );
+    }
+
+    public function pushCommand( command:Class ):void
+    {
+        _commands.push( command );
     }
 
     public function injectPayload( injector:Injector ):void

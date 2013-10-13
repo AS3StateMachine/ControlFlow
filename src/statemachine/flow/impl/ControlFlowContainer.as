@@ -1,7 +1,5 @@
 package statemachine.flow.impl
 {
-import org.swiftsuspenders.Injector;
-
 import statemachine.flow.api.Payload;
 import statemachine.flow.builders.FlowMapping;
 import statemachine.flow.builders.OptionalFlowMapping;
@@ -10,28 +8,29 @@ import statemachine.flow.core.ExecutableBlock;
 
 public class ControlFlowContainer implements FlowMapping, ExecutableBlock
 {
-    internal var injector:Injector;
     internal const blocks:Vector.<ExecutableBlock> = new Vector.<ExecutableBlock>();
 
-    public function ControlFlowContainer( injector:Injector )
+    public function ControlFlowContainer( executor:Executor )
     {
-        this.injector = injector;
-        this.injector.map( Injector ).toValue( this.injector );
-        this.injector.map( FlowMapping ).toValue( this );
+        _executor = executor;
     }
+
+    private var _executor:Executor;
 
     public function get always():SimpleFlowMapping
     {
-        const block:* = injector.getOrCreateNewInstance( SimpleControlFlow );
+        const block:SimpleControlFlow = new SimpleControlFlow( _executor );
+        block.parent = this;
         blocks.push( block );
-        return block;
+        return block as SimpleFlowMapping;
     }
 
     public function get either():OptionalFlowMapping
     {
-        const block:* = injector.getOrCreateNewInstance( OptionalControlFlow );
+        const block:OptionalControlFlow = new OptionalControlFlow( _executor );
+        block.parent = this;
         blocks.push( block );
-        return block;
+        return block as OptionalFlowMapping;
     }
 
     public function fix():void

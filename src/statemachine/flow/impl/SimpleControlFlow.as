@@ -8,13 +8,24 @@ import statemachine.flow.core.ExecutableBlock;
 public class SimpleControlFlow implements SimpleFlowMapping, ExecutableBlock
 {
     internal const _commandGroup:ExecutionData = new ExecutionData();
-    private var _parent:FlowMapping;
-    private var _executor:Executor;
 
-    public function SimpleControlFlow( parent:FlowMapping, executor:Executor ):void
+    public function SimpleControlFlow( executor:Executor ):void
     {
-        _parent = parent;
         _executor = executor;
+    }
+
+    private var _executor:Executor;
+    private var _parent:FlowMapping;
+
+    public function set parent( value:FlowMapping ):void
+    {
+        _parent = value;
+    }
+
+    public function get and():FlowMapping
+    {
+        _commandGroup.fix();
+        return _parent;
     }
 
     public function executeAll( ...args ):SimpleFlowMapping
@@ -34,13 +45,6 @@ public class SimpleControlFlow implements SimpleFlowMapping, ExecutableBlock
         }
         return this;
     }
-
-    public function get and():FlowMapping
-    {
-        _commandGroup.fix();
-        return _parent;
-    }
-
 
     public function executeBlock( payload:Payload ):void
     {
