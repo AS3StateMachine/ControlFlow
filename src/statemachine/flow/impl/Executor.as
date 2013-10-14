@@ -1,15 +1,15 @@
 package statemachine.flow.impl
 {
-import org.swiftsuspenders.Injector;
+import robotlegs.bender.framework.api.IInjector;
 
 public class Executor
 {
-    private var _injector:Injector;
-
-    public function Executor( injector:Injector )
+    public function Executor( injector:IInjector )
     {
-        _injector = (injector == null) ? null :injector.createChildInjector();
+        _injector = (injector == null) ? null : injector.createChild();
     }
+
+    private var _injector:IInjector;
 
     public function execute( executionGroup:ExecutionData ):Boolean
     {

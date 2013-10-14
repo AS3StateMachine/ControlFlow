@@ -6,7 +6,9 @@ import flash.events.IEventDispatcher;
 import org.hamcrest.assertThat;
 import org.hamcrest.collection.array;
 import org.hamcrest.object.strictlyEqualTo;
-import org.swiftsuspenders.Injector;
+
+import robotlegs.bender.framework.api.IInjector;
+import robotlegs.bender.framework.impl.RobotlegsInjector;
 
 import statemachine.flow.api.EventFlowMap;
 import statemachine.support.TestEvent;
@@ -20,24 +22,24 @@ import statemachine.support.guards.OnlyIfHello;
 public class IntegrationTest implements TestRegistry
 {
     private var _classUnderTest:EventFlowMap;
-    private var _injector:Injector;
+    private var _injector:IInjector;
     private var _commands:Vector.<Class>;
     private var _dispatcher:IEventDispatcher;
-
 
     [Before]
     public function before():void
     {
         _commands = new Vector.<Class>();
-        _injector = new Injector();
+        _injector = new RobotlegsInjector();
         _dispatcher = new EventDispatcher();
         _injector.map( TestRegistry ).toValue( this );
         _injector.map( IEventDispatcher ).toValue( _dispatcher );
-        _injector.map( Injector ).toValue( _injector );
+        _injector.map( IInjector ).toValue( _injector );
         _injector.map( Executor );
-        _classUnderTest = new EventMap( _injector );
+        _injector.map( TriggerFlowMap );
+        _injector.map( EventMap );
+        _classUnderTest = _injector.getInstance( EventMap );
     }
-
 
     [Test]
     public function test_always_blocks__fire_identically_under_identical_guards():void
@@ -59,7 +61,6 @@ public class IntegrationTest implements TestRegistry
                 )
         )
     }
-
 
     [Test]
     public function test_always_blocks__fire_differently_under_changing_guards():void
@@ -84,7 +85,6 @@ public class IntegrationTest implements TestRegistry
         )
     }
 
-
     [Test]
     public function test_always_blocks__onApproval_last():void
     {
@@ -101,8 +101,6 @@ public class IntegrationTest implements TestRegistry
                 )
         )
     }
-
-
 
     [Test]
     public function test_either_blocks__fire_identically_under_identical_guards():void
@@ -123,7 +121,6 @@ public class IntegrationTest implements TestRegistry
                 )
         )
     }
-
 
     [Test]
     public function test_either_blocks__fire_differently_under_changing_guards():void
@@ -158,8 +155,6 @@ public class IntegrationTest implements TestRegistry
                 )
         )
     }
-
-
 
     [Test]
     public function test_either_blocks__fallback_block_executed():void
@@ -202,7 +197,6 @@ public class IntegrationTest implements TestRegistry
         )
     }
 
-
     [Test]
     public function test_mixed_blocks__fire_differently_under_changing_guards():void
     {
@@ -228,7 +222,6 @@ public class IntegrationTest implements TestRegistry
         )
     }
 
-
     public function register( value:* ):void
     {
         _commands.push( value );
@@ -248,7 +241,6 @@ public class IntegrationTest implements TestRegistry
     {
         _dispatcher.dispatchEvent( new TestEvent( "nothing" ) );
     }
-
 
     private function configureAlwaysBlock():void
     {

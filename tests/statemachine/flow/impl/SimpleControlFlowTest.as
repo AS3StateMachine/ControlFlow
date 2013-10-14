@@ -3,12 +3,10 @@ package statemachine.flow.impl
 import org.hamcrest.assertThat;
 import org.hamcrest.collection.array;
 import org.hamcrest.object.strictlyEqualTo;
-import org.swiftsuspenders.Injector;
 
 import statemachine.flow.api.Payload;
 import statemachine.flow.impl.support.mappings.MockExecutor;
 import statemachine.support.TestEvent;
-import statemachine.support.TestRegistry;
 import statemachine.support.cmds.CommandWithTestEvent;
 import statemachine.support.cmds.MockCommandOne;
 import statemachine.support.cmds.MockCommandThree;

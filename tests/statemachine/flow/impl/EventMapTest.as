@@ -5,43 +5,28 @@ import flash.events.IEventDispatcher;
 import flash.events.ProgressEvent;
 
 import org.hamcrest.assertThat;
-import org.hamcrest.object.equalTo;
-import org.hamcrest.object.isTrue;
-import org.hamcrest.object.strictlyEqualTo;
-import org.swiftsuspenders.Injector;
 
-import statemachine.support.TestRegistry;
+import org.hamcrest.object.equalTo;
+
+import statemachine.flow.impl.support.mappings.MockExecutor;
 import statemachine.support.cmds.MockCommandOne;
 
-public class EventMapTest implements TestRegistry
+public class EventMapTest
 {
     private var _classUnderTest:EventMap;
-    private var _injector:Injector;
-    private var _executables:Vector.<Class>;
     private var _dispatcher:IEventDispatcher;
+    private var _triggerMap:TriggerFlowMap;
+    private var _executor:MockExecutor;
 
     [Before]
     public function before():void
     {
-        _injector = new Injector();
         _dispatcher = new EventDispatcher();
-        _injector.map( IEventDispatcher ).toValue( _dispatcher );
-        _injector.map( TestRegistry ).toValue( this );
-        _classUnderTest = new EventMap( _injector );
-        _executables = new Vector.<Class>();
+        _executor = new MockExecutor( null );
+        _triggerMap = new TriggerFlowMap( _executor );
+        _classUnderTest = new EventMap( _triggerMap, _dispatcher );
     }
 
-    [Test]
-    public function constructor_injects_childInjector_as_Injector():void
-    {
-        assertThat( _classUnderTest.injector.getInstance( Injector ), strictlyEqualTo( _classUnderTest.injector ) );
-    }
-
-    [Test]
-    public function constructor_injects_Executor():void
-    {
-        assertThat( _classUnderTest.injector.hasMapping( Executor ), isTrue() );
-    }
 
     [Test]
     public function flow_not_executed_if_event_not_dispatched():void
@@ -50,7 +35,7 @@ public class EventMapTest implements TestRegistry
                 .always.executeAll( MockCommandOne )
                 .and.fix();
 
-        assertThat( _executables.length, equalTo( 0 ) );
+        assertThat( _executor.recievedData.length, equalTo( 0 ) );
     }
 
     [Test]
@@ -60,7 +45,7 @@ public class EventMapTest implements TestRegistry
                 .always.executeAll( MockCommandOne )
                 .and.fix();
         _dispatcher.dispatchEvent( new ProgressEvent( ProgressEvent.PROGRESS ) );
-        assertThat( _executables.length, equalTo( 1 ) );
+         assertThat( _executor.recievedData.length, equalTo( 1 ) );
     }
 
     [Test]
@@ -72,13 +57,7 @@ public class EventMapTest implements TestRegistry
         _classUnderTest.remove( ProgressEvent.PROGRESS );
 
         _dispatcher.dispatchEvent( new ProgressEvent( ProgressEvent.PROGRESS ) );
-        assertThat( _executables.length, equalTo( 0 ) );
-    }
-
-
-    public function register( value:* ):void
-    {
-        _executables.push( value );
+        assertThat( _executor.recievedData.length, equalTo( 0 ) );
     }
 }
 }

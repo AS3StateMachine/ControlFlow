@@ -1,6 +1,6 @@
 package statemachine.flow.api
 {
-import org.swiftsuspenders.Injector;
+import robotlegs.bender.framework.api.IInjector;
 
 public class Payload
 {
@@ -12,7 +12,7 @@ public class Payload
         return this;
     }
 
-    public function inject( injector:Injector ):void
+    public function inject( injector:IInjector ):void
     {
         if ( _values.length == 0 )return;
         for each( var v:ValueBag in _values )
@@ -21,7 +21,7 @@ public class Payload
         }
     }
 
-    public function remove( injector:Injector ):void
+    public function remove( injector:IInjector ):void
     {
         if ( _values.length == 0 )return;
         for each( var v:ValueBag in _values )
@@ -42,7 +42,7 @@ public class Payload
 }
 }
 
-import org.swiftsuspenders.Injector;
+import robotlegs.bender.framework.api.IInjector;
 
 class ValueBag
 {
@@ -55,12 +55,12 @@ class ValueBag
         this.classRef = classRef;
     }
 
-    internal function inject( injector:Injector ):void
+    internal function inject( injector:IInjector ):void
     {
         injector.map( classRef ).toValue( value );
     }
 
-    public function remove( injector:Injector ):void
+    public function remove( injector:IInjector ):void
     {
         injector.unmap( classRef );
     }

@@ -6,7 +6,9 @@ import org.hamcrest.object.equalTo;
 import org.hamcrest.object.isFalse;
 import org.hamcrest.object.isTrue;
 import org.hamcrest.object.strictlyEqualTo;
-import org.swiftsuspenders.Injector;
+
+import robotlegs.bender.framework.api.IInjector;
+import robotlegs.bender.framework.impl.RobotlegsInjector;
 
 import statemachine.flow.api.Payload;
 import statemachine.support.TestEvent;
@@ -21,7 +23,7 @@ import statemachine.support.guards.OnlyIfGoodbye;
 
 public class ExecutorTest implements TestRegistry
 {
-    private var _injector:Injector;
+    private var _injector:IInjector;
     private var _classUnderTest:Executor;
     private var _executedCommands:Vector.<Class>;
 
@@ -29,7 +31,7 @@ public class ExecutorTest implements TestRegistry
     public function before():void
     {
         _executedCommands = new Vector.<Class>();
-        _injector = new Injector();
+        _injector = new RobotlegsInjector();
         _classUnderTest = new Executor( _injector );
         _injector.map( TestRegistry ).toValue( this );
     }

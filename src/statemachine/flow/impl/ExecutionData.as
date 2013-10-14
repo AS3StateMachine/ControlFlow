@@ -1,6 +1,6 @@
 package statemachine.flow.impl
 {
-import org.swiftsuspenders.Injector;
+import robotlegs.bender.framework.api.IInjector;
 
 import statemachine.flow.api.Payload;
 
@@ -41,13 +41,13 @@ public class ExecutionData
         _commands.push( command );
     }
 
-    public function injectPayload( injector:Injector ):void
+    public function injectPayload( injector:IInjector ):void
     {
         if ( _payload == null ) return;
         _payload.inject( injector );
     }
 
-    public function removePayload( injector:Injector ):void
+    public function removePayload( injector:IInjector ):void
     {
         if ( _payload == null ) return;
         _payload.remove( injector );
