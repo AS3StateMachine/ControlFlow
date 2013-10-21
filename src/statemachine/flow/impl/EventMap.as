@@ -5,6 +5,7 @@ import flash.utils.Dictionary;
 
 import statemachine.flow.api.EventFlowMap;
 import statemachine.flow.builders.FlowMapping;
+import statemachine.flow.core.Trigger;
 
 public class EventMap implements EventFlowMap
 {
@@ -20,7 +21,21 @@ public class EventMap implements EventFlowMap
 
     public function on( type:String, eventClass:Class = null ):FlowMapping
     {
-        _triggers[type] = new EventTrigger( type, eventClass ).setDispatcher( _dispatcher );
+        _triggers[type] =
+                new EventTrigger( type, eventClass )
+                        .setDispatcher( _dispatcher )
+                        .setUnmapper( _triggerMap );
+
+        return _triggerMap.map( _triggers[type] );
+    }
+
+    public function onceOn( type:String, eventClass:Class = null ):FlowMapping
+    {
+        _triggers[type] =
+                new EventTrigger( type, eventClass )
+                        .setDispatcher( _dispatcher, true )
+                        .setUnmapper( _triggerMap );
+
         return _triggerMap.map( _triggers[type] );
     }
 

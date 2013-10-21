@@ -3,9 +3,10 @@ package statemachine.flow.impl
 import flash.utils.Dictionary;
 
 import statemachine.flow.builders.FlowMapping;
+import statemachine.flow.builders.Unmapper;
 import statemachine.flow.core.Trigger;
 
-public class TriggerFlowMap
+public class TriggerFlowMap implements Unmapper
 {
     private const _map:Dictionary = new Dictionary();
 
