@@ -24,7 +24,7 @@ public class ExecutableTrigger implements Trigger, ExecutableBlock
     {
         receivedPayload = payload;
         numbExecutions++;
-        (_client != null) && _client.executeBlock(null);
+        (_client != null) && _client.executeBlock(payload);
     }
 }
 }

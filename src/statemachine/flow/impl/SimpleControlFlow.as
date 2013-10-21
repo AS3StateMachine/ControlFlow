@@ -28,7 +28,7 @@ public class SimpleControlFlow implements SimpleFlowMapping, ExecutableBlock
         return _parent;
     }
 
-    public function executeAll( ...args ):SimpleFlowMapping
+    public function execute( ...args ):SimpleFlowMapping
     {
         for each ( var commandClass:Class in args )
         {

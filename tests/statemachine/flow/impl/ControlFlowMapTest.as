@@ -31,7 +31,7 @@ public class ControlFlowMapTest
     public function when_trigger_listener_is_called__FlowGroup_is_executed():void
     {
         const trigger:ExecutableTrigger = new ExecutableTrigger();
-        _classUnderTest.map( trigger ).always.executeAll( MockCommandOne );
+        _classUnderTest.map( trigger ).only.execute( MockCommandOne );
         trigger.executeBlock( null );
         assertThat( _executor.recievedPayload.length, equalTo( 1 ) );
     }
@@ -40,7 +40,7 @@ public class ControlFlowMapTest
     public function when_trigger_is_removed__trigger_listener_is_null():void
     {
         const trigger:ExecutableTrigger = new ExecutableTrigger();
-        _classUnderTest.map( trigger ).always.executeAll( MockCommandOne );
+        _classUnderTest.map( trigger ).only.execute( MockCommandOne );
         _classUnderTest.unmap( trigger );
         trigger.executeBlock( null );
         assertThat( _executor.recievedPayload.length, equalTo( 0 ) );

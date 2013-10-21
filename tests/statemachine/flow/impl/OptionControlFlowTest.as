@@ -48,13 +48,13 @@ public class OptionControlFlowTest
     [Test]
     public function execute_returns_self():void
     {
-        assertThat( _classUnderTest.executeAll(), strictlyEqualTo( _classUnderTest ) );
+        assertThat( _classUnderTest.execute(), strictlyEqualTo( _classUnderTest ) );
     }
 
     [Test]
     public function execute_maps_command_classes_to_currentCommandGroup_and_retains_order():void
     {
-        _classUnderTest.executeAll( MockCommandOne, MockCommandThree, MockCommandTwo )
+        _classUnderTest.execute( MockCommandOne, MockCommandThree, MockCommandTwo )
         assertThat( _classUnderTest.currentCommandGroup.commands,
                 array(
                         strictlyEqualTo( MockCommandOne ),
@@ -66,7 +66,7 @@ public class OptionControlFlowTest
     [Test]
     public function execute_pushes_currentCommandMap():void
     {
-        _classUnderTest.executeAll( MockCommandOne, MockCommandThree, MockCommandTwo )
+        _classUnderTest.execute( MockCommandOne, MockCommandThree, MockCommandTwo )
         assertThat( _classUnderTest.executionData[0], strictlyEqualTo( _classUnderTest.currentCommandGroup ) );
     }
 
@@ -99,7 +99,7 @@ public class OptionControlFlowTest
     public function chaining_execute_and_onApproval_retains_commandClasses():void
     {
         _classUnderTest
-                .executeAll( MockCommandOne, MockCommandThree, MockCommandTwo )
+                .execute( MockCommandOne, MockCommandThree, MockCommandTwo )
                 .onApproval( GrumpyGuard, HappyGuard, JoyfulGuard );
 
         assertThat( _classUnderTest.currentCommandGroup.commands,
@@ -115,7 +115,7 @@ public class OptionControlFlowTest
     {
         _classUnderTest
                 .onApproval( GrumpyGuard, HappyGuard, JoyfulGuard )
-                .executeAll( MockCommandOne, MockCommandThree, MockCommandTwo );
+                .execute( MockCommandOne, MockCommandThree, MockCommandTwo );
 
         assertThat( _classUnderTest.currentCommandGroup.guards,
                 array(
@@ -129,7 +129,7 @@ public class OptionControlFlowTest
     public function and_property_sets_currentCommandGroup_to_nulls():void
     {
         _classUnderTest
-                .executeAll( MockCommandOne, MockCommandThree, MockCommandTwo )
+                .execute( MockCommandOne, MockCommandThree, MockCommandTwo )
                 .and;
 
         assertThat( _classUnderTest.currentCommandGroup, nullValue() );
@@ -139,7 +139,7 @@ public class OptionControlFlowTest
     public function or_property_sets_currentCommandGroup_to_null():void
     {
         _classUnderTest
-                .executeAll( MockCommandOne, MockCommandThree, MockCommandTwo )
+                .execute( MockCommandOne, MockCommandThree, MockCommandTwo )
                 .or;
 
         assertThat( _classUnderTest.currentCommandGroup, nullValue() );
@@ -150,9 +150,9 @@ public class OptionControlFlowTest
     {
         _executor.setExecuteReturn( true, true, true );
         _classUnderTest
-                .executeAll( MockCommandThree )
-                .or.executeAll( MockCommandOne )
-                .or.executeAll( MockCommandTwo );
+                .execute( MockCommandThree )
+                .or.execute( MockCommandOne )
+                .or.execute( MockCommandTwo );
 
         _classUnderTest.executeBlock( null );
 
@@ -167,9 +167,9 @@ public class OptionControlFlowTest
     {
         _executor.setExecuteReturn( false, true, true );
         _classUnderTest
-                .executeAll( MockCommandThree )
-                .or.executeAll( MockCommandOne )
-                .or.executeAll( MockCommandTwo );
+                .execute( MockCommandThree )
+                .or.execute( MockCommandOne )
+                .or.execute( MockCommandTwo );
 
         _classUnderTest.executeBlock( null );
 
@@ -183,9 +183,9 @@ public class OptionControlFlowTest
     {
         _executor.setExecuteReturn( false, false, true );
         _classUnderTest
-                .executeAll( MockCommandThree )
-                .or.executeAll( MockCommandOne )
-                .or.executeAll( MockCommandTwo );
+                .execute( MockCommandThree )
+                .or.execute( MockCommandOne )
+                .or.execute( MockCommandTwo );
 
         _classUnderTest.executeBlock( null );
 
@@ -197,7 +197,7 @@ public class OptionControlFlowTest
     [Test] // will throw error if fails
     public function execute_passes_payload_to_Executor():void
     {
-        _classUnderTest.executeAll( CommandWithTestEvent );
+        _classUnderTest.execute( CommandWithTestEvent );
         _classUnderTest.executeBlock( new Payload().add( new TestEvent( "hello" ), TestEvent ) );
     }
 

@@ -30,19 +30,19 @@ public class ControlFlowContainerTest
     [Test]
     public function always_property_returns_instanceOf_SingleFlowMapping():void
     {
-        assertThat( _classUnderTest.always, instanceOf( SimpleFlowMapping ) )
+        assertThat( _classUnderTest.only, instanceOf( SimpleFlowMapping ) )
     }
 
     [Test]
     public function always_property_returns_unique_instanceOf_SingleFlowMapping():void
     {
-        assertThat( _classUnderTest.always, not( _classUnderTest.always ) )
+        assertThat( _classUnderTest.only, not( _classUnderTest.only ) )
     }
 
     [Test]
     public function SingleFlowMapping_instance_added_to_groups():void
     {
-        assertThat( _classUnderTest.always, strictlyEqualTo( _classUnderTest.blocks[0] ) )
+        assertThat( _classUnderTest.only, strictlyEqualTo( _classUnderTest.blocks[0] ) )
     }
 
     [Test]
@@ -67,9 +67,9 @@ public class ControlFlowContainerTest
     public function execute_iterates_through_executables():void
     {
         _classUnderTest
-                .either.executeAll( MockCommandOne )
-                .and.always.executeAll( MockCommandTwo )
-                .and.either.executeAll( MockCommandThree );
+                .either.execute( MockCommandOne )
+                .and.only.execute( MockCommandTwo )
+                .and.either.execute( MockCommandThree );
 
         _classUnderTest.executeBlock( null );
 
@@ -80,9 +80,9 @@ public class ControlFlowContainerTest
     public function execute_passes_payload_to_executables():void
     {
         _classUnderTest
-                .either.executeAll( MockCommandOne )
-                .and.always.executeAll( MockCommandTwo )
-                .and.either.executeAll( MockCommandThree );
+                .either.execute( MockCommandOne )
+                .and.only.execute( MockCommandTwo )
+                .and.either.execute( MockCommandThree );
 
         const payload:Payload = new Payload()
         _classUnderTest.executeBlock( payload );

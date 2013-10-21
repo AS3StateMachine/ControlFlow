@@ -246,9 +246,9 @@ public class IntegrationTest implements TestRegistry
     {
         _classUnderTest
                 .on( TestEvent.TESTING, TestEvent )
-                .always.executeAll( MockCommandThree, MockCommandTwo )
-                .and.always.onApproval( OnlyIfHello ).executeAll( MockCommandThree )
-                .and.always.onApproval( OnlyIfGoodbye ).executeAll( MockCommandTwo, MockCommandOne )
+                .only.execute( MockCommandThree, MockCommandTwo )
+                .and.only.onApproval( OnlyIfHello ).execute( MockCommandThree )
+                .and.only.onApproval( OnlyIfGoodbye ).execute( MockCommandTwo, MockCommandOne )
                 .and.fix();
 
 
@@ -258,9 +258,9 @@ public class IntegrationTest implements TestRegistry
     {
         _classUnderTest
                 .on( TestEvent.TESTING, TestEvent )
-                .either.onApproval( OnlyIfHello ).executeAll( MockCommandThree, MockCommandTwo )
-                .or.onApproval( OnlyIfGoodbye ).executeAll( MockCommandThree )
-                .or.executeAll( MockCommandTwo, MockCommandOne, MockCommandTwo )
+                .either.onApproval( OnlyIfHello ).execute( MockCommandThree, MockCommandTwo )
+                .or.onApproval( OnlyIfGoodbye ).execute( MockCommandThree )
+                .or.execute( MockCommandTwo, MockCommandOne, MockCommandTwo )
                 .and.fix();
     }
 
@@ -268,11 +268,11 @@ public class IntegrationTest implements TestRegistry
     {
         _classUnderTest
                 .on( TestEvent.TESTING, TestEvent )
-                .always.executeAll( MockCommandThree, MockCommandTwo )
-                .and.either.executeAll( MockCommandTwo, MockCommandThree ).onApproval( OnlyIfHello )
-                .or.executeAll( MockCommandThree ).onApproval( OnlyIfGoodbye )
-                .or.executeAll( MockCommandTwo, MockCommandOne, MockCommandTwo )
-                .and.always.onApproval( OnlyIfGoodbye ).executeAll( MockCommandTwo, MockCommandOne )
+                .only.execute( MockCommandThree, MockCommandTwo )
+                .and.either.execute( MockCommandTwo, MockCommandThree ).onApproval( OnlyIfHello )
+                .or.execute( MockCommandThree ).onApproval( OnlyIfGoodbye )
+                .or.execute( MockCommandTwo, MockCommandOne, MockCommandTwo )
+                .and.only.onApproval( OnlyIfGoodbye ).execute( MockCommandTwo, MockCommandOne )
                 .and.fix();
     }
 
@@ -280,9 +280,9 @@ public class IntegrationTest implements TestRegistry
     {
         _classUnderTest
                 .on( TestEvent.TESTING, TestEvent )
-                .always.executeAll( MockCommandThree, MockCommandTwo )
-                .and.always.executeAll( MockCommandThree ).onApproval( OnlyIfHello )
-                .and.always.executeAll( MockCommandTwo, MockCommandOne ).onApproval( OnlyIfGoodbye )
+                .only.execute( MockCommandThree, MockCommandTwo )
+                .and.only.execute( MockCommandThree ).onApproval( OnlyIfHello )
+                .and.only.execute( MockCommandTwo, MockCommandOne ).onApproval( OnlyIfGoodbye )
                 .and.fix();
     }
 
@@ -290,9 +290,9 @@ public class IntegrationTest implements TestRegistry
     {
         _classUnderTest
                 .on( TestEvent.TESTING, TestEvent )
-                .either.executeAll( MockCommandThree, MockCommandTwo ).onApproval( OnlyIfHello )
-                .or.executeAll( MockCommandThree ).onApproval( OnlyIfGoodbye )
-                .or.executeAll( MockCommandTwo, MockCommandOne, MockCommandTwo )
+                .either.execute( MockCommandThree, MockCommandTwo ).onApproval( OnlyIfHello )
+                .or.execute( MockCommandThree ).onApproval( OnlyIfGoodbye )
+                .or.execute( MockCommandTwo, MockCommandOne, MockCommandTwo )
                 .and.fix();
     }
 }

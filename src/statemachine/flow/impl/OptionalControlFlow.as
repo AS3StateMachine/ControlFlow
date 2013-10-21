@@ -36,7 +36,7 @@ public class OptionalControlFlow implements OptionalFlowMapping, ExecutableBlock
         return this;
     }
 
-    public function executeAll( ...args ):OptionalFlowMapping
+    public function execute( ...args ):OptionalFlowMapping
     {
         (currentCommandGroup == null) && createAndPushCommandGroup();
 

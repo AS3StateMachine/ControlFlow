@@ -39,13 +39,13 @@ public class SimpleControlFlowTest
     [Test]
     public function execute_returns_self():void
     {
-        assertThat( _classUnderTest.executeAll(), strictlyEqualTo( _classUnderTest ) );
+        assertThat( _classUnderTest.execute(), strictlyEqualTo( _classUnderTest ) );
     }
 
     [Test]
     public function execute_maps_command_classes_to_CommandMap_and_retains_order():void
     {
-        _classUnderTest.executeAll( MockCommandOne, MockCommandThree, MockCommandTwo )
+        _classUnderTest.execute( MockCommandOne, MockCommandThree, MockCommandTwo )
         assertThat( _classUnderTest._commandGroup.commands,
                 array(
                         strictlyEqualTo( MockCommandOne ),
@@ -75,7 +75,7 @@ public class SimpleControlFlowTest
     [Test]
     public function execute_executes_commandGroup():void
     {
-        _classUnderTest.executeAll( MockCommandOne, MockCommandThree );
+        _classUnderTest.execute( MockCommandOne, MockCommandThree );
         _classUnderTest.executeBlock( null );
         assertThat(
                 _executor.recievedData[0].commands,
@@ -88,7 +88,7 @@ public class SimpleControlFlowTest
     [Test] // will throw error if fails
     public function execute_passes_payload_to_Executor():void
     {
-        _classUnderTest.executeAll( CommandWithTestEvent );
+        _classUnderTest.execute( CommandWithTestEvent );
         _classUnderTest.executeBlock( new Payload().add( new TestEvent( "hello" ), TestEvent ) );
     }
 

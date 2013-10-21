@@ -17,7 +17,7 @@ public class ControlFlowContainer implements FlowMapping, ExecutableBlock
 
     private var _executor:Executor;
 
-    public function get always():SimpleFlowMapping
+    public function get only():SimpleFlowMapping
     {
         const block:SimpleControlFlow = new SimpleControlFlow( _executor );
         block.parent = this;

@@ -4,7 +4,7 @@ public interface OptionalFlowMapping extends ReturnMapping
 {
     function get or():OptionalFlowMapping;
 
-    function executeAll( ...args ):OptionalFlowMapping;
+    function execute( ...args ):OptionalFlowMapping;
 
     function onApproval( ...args:Array ):OptionalFlowMapping;
 }

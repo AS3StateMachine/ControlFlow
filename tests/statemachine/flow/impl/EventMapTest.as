@@ -32,7 +32,7 @@ public class EventMapTest
     public function flow_not_executed_if_event_not_dispatched():void
     {
         _classUnderTest.on( ProgressEvent.PROGRESS, ProgressEvent )
-                .always.executeAll( MockCommandOne )
+                .only.execute( MockCommandOne )
                 .and.fix();
 
         assertThat( _executor.recievedData.length, equalTo( 0 ) );
@@ -42,7 +42,7 @@ public class EventMapTest
     public function flow_executed_when_event_dispatched():void
     {
         _classUnderTest.on( ProgressEvent.PROGRESS, ProgressEvent )
-                .always.executeAll( MockCommandOne )
+                .only.execute( MockCommandOne )
                 .and.fix();
         _dispatcher.dispatchEvent( new ProgressEvent( ProgressEvent.PROGRESS ) );
          assertThat( _executor.recievedData.length, equalTo( 1 ) );
@@ -52,12 +52,24 @@ public class EventMapTest
     public function flow_not_executed_when_event_removed():void
     {
         _classUnderTest.on( ProgressEvent.PROGRESS, ProgressEvent )
-                .always.executeAll( MockCommandOne )
+                .only.execute( MockCommandOne )
                 .and.fix();
         _classUnderTest.remove( ProgressEvent.PROGRESS );
 
         _dispatcher.dispatchEvent( new ProgressEvent( ProgressEvent.PROGRESS ) );
         assertThat( _executor.recievedData.length, equalTo( 0 ) );
+    }
+
+    [Test]
+    public function flow_not_executed_when_event_mapped_onceOn():void
+    {
+        _classUnderTest.onceOn( ProgressEvent.PROGRESS, ProgressEvent )
+                .only.execute( MockCommandOne )
+                .and.fix();
+
+        _dispatcher.dispatchEvent( new ProgressEvent( ProgressEvent.PROGRESS ) );
+        _dispatcher.dispatchEvent( new ProgressEvent( ProgressEvent.PROGRESS ) );
+        assertThat( _executor.recievedData.length, equalTo( 1 ) );
     }
 }
 }
